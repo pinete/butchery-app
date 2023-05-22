@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from '../01_atomos/Button'
+import Button from '../01_atomos/MotionButton'
 import Input from '../01_atomos/Input'
 
 const FormAzul = () => {
