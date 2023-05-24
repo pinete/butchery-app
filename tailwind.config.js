@@ -1,9 +1,37 @@
 /** @type {import('tailwindcss').Config} */
+
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}",],
   darkMode: 'class',
+  
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // you can either spread `colors` to apply all the colors
+        ...colors,
+        // or add them one by one and name whatever you want
+        // transparent: 'transparent',
+        // current: 'currentColor',
+        // amber: colors.amber,
+        // black: colors.black,
+        // emerald: colors.emerald,
+        // gray: colors.trueGray,
+        // indigo: colors.indigo,
+        // lime:colors.lime,
+        // purple:colors.purple,
+        // red: colors.rose,
+        // sky:colors.sky,
+        // teal:colors.teal,
+        // white: colors.white,
+      }
+    },
   },
   plugins: [],
+  safelist: [
+    {
+      pattern: /(bg|text|border)-(transparent|current|amber|black|emerald|gray|indigo|lime|purple|red|sky|teal|white)/
+    }
+  ]
 }

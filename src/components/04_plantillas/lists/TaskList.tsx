@@ -3,14 +3,28 @@ import useList from '../../../hooks/useList';
 import useSweetAlert from '../../../hooks/useSweetAlert'
 import { motion } from 'framer-motion'
 import MotionButton from '../../01_atomos/MotionButton'
-import { addObject, deleteObject, getObjects, toggleObjectKey } from '../../../firebase/ObjController'
+import MotionTextArea from '../../01_atomos/MotionTextArea'
+import MotionInput from '../../01_atomos/MotionInput'
+import { addObject, deleteObject, getObjects, toggleObjectKey, updateObject } from '../../../firebase/ObjController'
 
-interface linAssignmentProps {
+interface linTaskProps {
   completed:boolean,
-  text:string,
+  article:string,
+  quantity:string,
+  description:string,
   id:string, 
-  created:Date,
-  modified:Date
+  created:Date | undefined,
+  modified:Date | undefined
+}
+
+const emptyNewTask = {
+  completed:false,
+  article:'',
+  quantity:'',
+  description:'',
+  id:'', 
+  created:undefined,
+  modified:undefined
 }
 // Usamos Tailwind para los estilos y framer-motion para las animaciones
 // Al asociar, por ejemplo un boton, a motion lo que hacemos es añadirle nuevas posibilidades de props
@@ -20,19 +34,50 @@ interface linAssignmentProps {
  * @returns (React.Component)
  */
 const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState<linTaskProps>(emptyNewTask);
+  const [newIndex, setNewIndex] = useState<number>(-1)
   const tasks = useList(() => getObjects('tasks'))
   const alert = useSweetAlert()
+  const [btnClick, setBtnClick] = useState<boolean>(false);
 
+  //const articleRef = useRef<HTMLInputElement | null>(null)
+  
+  const updateTask=(index:number)=>{
+    setBtnClick(!btnClick) // Cambiamos el boton a Nueva Linea
+    if (newTask.article === "" || newTask.quantity === '' ) {
+      //TODO aviso de que tienen que estar rellenos
+      return
+    }
+    // TODO actualizo en DB
+    const obj = newTask
+    obj.modified = new Date()
+    updateObject(obj, 'tasks')
+    // Cuando se haya añadido a la DB la incorporamos a la lista 
+    // incluyendo el id devuelto para usarlo en futuros cambios
+    .then((id) => {
+      setNewTask(obj)
+      tasks.updateItem(newIndex, newTask)
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+    // En cualquier caso
+    .finally(() => setNewTask(emptyNewTask))
+  }
+  
   /**
    * Añade una nueva tarea a BD. Si todo OK la añade tambien a la 
    * lista para ser mostrada, y en todos los casos vacía el input.
    */
   const addNewTask = () => {
+    
     // Si está vacio no hace nada
-    if (newTask === "") return; 
+    if (newTask.article === "" || newTask.quantity === '' ) {
+      //TODO aviso de que tienen que estar rellenos
+      return
+    } 
     // Añadimos una nueva tarea a la base de datos
-    const obj:linAssignmentProps = { text: newTask, completed: false ,id:'', created:new Date(), modified:new Date()}
+    const obj:linTaskProps = { article: newTask.article, quantity: newTask.quantity, description: newTask.description, completed: false ,id:'', created:new Date(), modified:new Date()}
     addObject(obj, 'tasks')
     // Cuando se haya añadido a la DB la incorporamos a la lista 
     // incluyendo el id devuelto para usarlo en futuros cambios
@@ -46,8 +91,16 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
         console.error(e)
       })
       // En cualquier caso
-      .finally(() => setNewTask(''));
+      .finally(() => setNewTask(emptyNewTask))
   };
+
+  const changeTask = (index:number) => {
+    setBtnClick(!btnClick)
+    setNewTask(tasks.get(index))
+    setNewIndex(index)
+    document.documentElement.scrollTo(0, 0); // ir al inicio de la página
+
+  }
 
   /**
    * Borra de la DB y de la lista la tarea seleccionada con la posicion index
@@ -56,11 +109,13 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
   const delTask = (index:number) => {
     //Funcion enviada a sweetAlert para el caso de confirmación
     const deleteItemDBAndList = () => {
-      const item:linAssignmentProps = tasks.get(index)
+      const item:linTaskProps = tasks.get(index)
       deleteObject(item,'tasks')
         .then(() => tasks.remove(index))
         .catch((e) => console.error(e))
     }
+    setBtnClick(false)
+    setNewTask(emptyNewTask)
     alert.onDelete(deleteItemDBAndList, 'task')
   }    
 
@@ -79,13 +134,27 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
     toggleObjectKey( item, 'completed', 'tasks' )
       // Cuando se haya cambiado la tarea en la DB incorporamos el cambio a la lista para ser mostradas
       .then(() => {
-        tasks.update( index, 'completed', !value );  
+        tasks.updateField( index, 'completed', !value );  
       })
       // Si se produce un error
       .catch((e) => {
         console.error(e)
       })
+    setBtnClick(false)
+    setNewTask(emptyNewTask)
   };
+
+  /*
+  const changeProperty = (e:any, field:string) => { 
+    const newItem = {...newTask}; 
+    // if (typeof `${field}` === 'boolean') {
+    //   newItem[field as keyof linTaskProps] = e.target.checked as boolean;
+    // } else {
+    //   newItem[field as keyof linTaskProps] = e.target.value as string;
+    // }
+    setNewTask(newItem);
+  }
+  */
 
   /**
    * Cambiar el estado de mostrar Settings
@@ -114,26 +183,66 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
       </header>
       <div>
         <div className='my-4'>
-          <input
-            className={`inputTailWind dark:bg-slate-700`}
-            type="text"
-            value={newTask}
-            onKeyDown={(e) => e.key === 'Enter' && addNewTask()} // añade nueva tarea al pulsar tecla 'ENTER' sobre el input
-            onChange={(e) => setNewTask(e.target.value)}
-            placeholder="New Task"
+          <MotionInput 
+            bg={'sky-100'}
+            bgHover={'sky-400'}
+            bgDark = {'slate-700'}
+            value={newTask.article}
+            // onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && addNewTask()} // añade nueva tarea al pulsar tecla 'ENTER' sobre el input
+            onChange={(e:React.ChangeEvent<HTMLInputElement>) => 
+              {
+                const newItem = {...newTask};
+                newItem.article = e.currentTarget.value
+                setNewTask(newItem);
+              }
+            }
+            placeholder={'¿Que quieres comprar?'}
+          />
+          <MotionInput 
+            bg={'sky-100'}
+            bgHover={'sky-400'}
+            bgDark = {'slate-700'}
+            value={newTask.quantity}
+            // onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && addNewTask()} // añade nueva tarea al pulsar tecla 'ENTER' sobre el input
+            onChange={(e:React.ChangeEvent<HTMLInputElement>) => 
+              {
+                const newItem = {...newTask};
+                newItem.quantity = e.currentTarget.value
+                setNewTask(newItem);
+              }
+            }
+            placeholder={'¿Cuanto quieres?'}
+          />
+          <MotionTextArea
+            // id='description'
+            textLabel={'¿Cómo lo quieres?'}
+            bg= {'sky-100'}
+            bgHover= {'sky-400'}
+            bgDark = {'slate-700'}
+            value={newTask.description}
+            //onKeyDown={(e:React.ChangeEvent<HTMLInputElement>) => e.keyCode === 'Enter' && addNewTask()} // añade nueva tarea al pulsar tecla 'ENTER' sobre el input
+            onChange={(e:React.ChangeEvent<HTMLInputElement>) => 
+              {
+                const newItem = {...newTask};
+                newItem.description = e.target.value 
+                console.log(e.target.value)
+                setNewTask(newItem);               
+              }
+            }
+            placeholder="Describe cómo lo quieres"
           />
           {/* Button NewTask */}
           <MotionButton 
-            key={`btn7`}
-            textButton={'Create Task'}
-            onclick={addNewTask}
+            // key={`btn7`}
+            textButton={btnClick ? 'Actualiza Linea':'Nueva Linea'}
+            onclick={btnClick ? ()=> updateTask(newIndex) : addNewTask}
           />
         </div>
         { tasks.isEmpty()
             ? (<p className='bg-sky-700'>Task List is Empty</p>)
             : (
               <ul>           
-                {tasks.value.map((task:linAssignmentProps, index:number) => (
+                {tasks.value.map((task:linTaskProps, index:number) => (
                   <motion.li 
                     initial={{ x: '100vw' }} 
                     animate = {{ x:0 }} 
@@ -141,7 +250,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     className='flex items-center list-none' >
                     {/* Boton DEL */}
                     <MotionButton 
-                      key={`btn1${index}`}
+                      // key={`btn1${index}`}
                       textColorHover='white'
                       bg='red-400'
                       bgHover='red-600'
@@ -150,9 +259,15 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                       icon='Trash'
                       onclick={()=>delTask(index)}
                     />
+                    {/* Boton UPDATE */}
+                    <MotionButton 
+                      // key={`btn1${index}`}
+                      icon='Pencil'
+                      onclick={()=>changeTask(index)}
+                    />
                     {/* Boton DONE/TODO */}
                     <MotionButton 
-                      key={`btn2${index}`}
+                      // key={`btn2${index}`}
                       textButton={task.completed ? 'Done' : 'ToDo'}
                       textColorHover={'white'}
                       bg={task.completed ? 'amber-400' : 'lime-400'}
@@ -163,13 +278,13 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     />
                     {/* Texto de la tarea */}
                     <span 
-                      key={`s1${index}`} 
+                      // key={`s1${index}`} 
                       className={`ml-2 text-sm italic dark:text-gray-100 ${
                           task.completed ? 'text-gray-400 line-through' :  'text-gray-800'
                         }`
                       }
                     >
-                      {task.text}
+                      {`${task.article} - ${task.quantity} - ${task.description}`}
                     </span>
                   </motion.li>
                 ))}

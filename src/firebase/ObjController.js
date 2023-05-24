@@ -53,6 +53,16 @@ export const updateObjectKey = (obj, key, newValue, collect) => {
 }
 
 /**
+ * Actualiza el Item (objeto) de la coleccion dada a los nuevos valores en la misma Id
+ * @param {*} obj 
+ * @param {*} collect 
+ * @returns 
+ */
+export const updateObject = (obj, collect) => {
+  return setDoc(doc(db, collect, obj.id), obj);
+}
+
+/**
  * Borra el objeto seleccionado
  * @param {object} obj objeto a borrar
  * @param {string} collect Coleccion en la base de datos

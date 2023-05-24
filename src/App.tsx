@@ -1,4 +1,5 @@
 import * as React from 'react'; // Para que funcione con Flow
+import { Header } from './components/03_organismos/Header';
 import TaskList from './components/04_plantillas/lists/TaskList'
 import Settings from './settings/Settings';
 // importamos animaciones framer-motion
@@ -20,7 +21,7 @@ const App = ():JSX.Element => {
   // Para que la aplicación sepa cuando mostrar los settings...
   const [showSettings, setShowSettings] = React.useState(false);
   // Configuracion inicial en localStorage de config si no existe (para la configuracion de estilo)
-  const defaultConfig: configProps = {theme: "light", lang: "es"}
+  const defaultConfig: configProps = {theme: "light", lang: "en"}
 
   /*
     Con useEffect se crea una variable de estado donde se almacena
@@ -44,6 +45,7 @@ const App = ():JSX.Element => {
   const toggleDark = () => dark === 'dark' ? setDark('ligth') : setDark('dark');
 
   return (
+    
     // Si config.theme es 'dark' añade la clase 'dark'
     <div className={`${dark === 'dark' ? 'dark' : ''}`}> {/* añadimos clase dark si en localStorage la variable dark es true */}
       <div 

@@ -6,7 +6,9 @@ import {
   BsLockFill as LockFill,
   BsTools as Tools
 } from 'react-icons/bs'
-
+import { 
+  SlPencil as Pencil
+} from 'react-icons/sl'
 
 /**
  * 
@@ -17,7 +19,7 @@ import {
  * @param bgDark Color e intensidad de fondo si modo oscuro. Por omisión 'sky-600'
  * @param bgHoverDark Color e intensidad de fondo si puntero sobre botón y modo oscuro. Por omisión 'sky-800'
  * @param adjunctClass Cualquier string a adjuntar a la clase (formato TailWind)
- * @param icon Icono. Admite: Trash, UnlockFill, LockFill, Tools
+ * @param icon Icono. Admite: Trash, Pencil, UnlockFill, LockFill, Tools
  * @returns 
  */
 
@@ -34,7 +36,7 @@ const MotionButton = (
     onclick=()=>{}
   }
 ) => {
-  const btnTailWind = `py-1 px-2 m-1 rounded shadow transition-all duration-200 bg-${bg} hover:text-${textColorHover} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`
+  // const btnTailWind = `shadow py-1 px-2 m-1 rounded hover:text-${textColorHover} transition-all duration-200 bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`
 
   const showText = () => {
     switch (icon) {
@@ -46,6 +48,8 @@ const MotionButton = (
         return <LockFill className='text-xl' />
       case 'Tools':
         return <Tools className='text-xl' />
+        case 'Pencil':
+          return <Pencil className='text-xl' />
       default:
         break;
     }
@@ -58,7 +62,7 @@ const MotionButton = (
       title={`Button with text ${textButton} and/or icon ${icon}`}
       whileHover={{ scale:1.1 }}
       whileTap={{ scale: 0.9 }} 
-      className={`${btnTailWind}`}
+      className={`btnTailWind hover:text-${textColorHover} bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`}
       onClick={ onclick }
     > 
     <p className='flex items-center'>

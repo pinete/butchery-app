@@ -6,12 +6,18 @@
   .btnSky {
     @apply py-1 px-2 shadow rounded transition duration-200  bg-sky-300 hover:bg-sky-400 hover:text-white dark:bg-sky-600 dark:hover:bg-sky-800
   }
-  /* 
+ 
   .btnTailWind {
-    @apply py-1 px-2 m-1 shadow rounded transition-all duration-200
+    @apply py-1 px-2 m-1 shadow rounded transition-all duration-200 
   }
- */
+
   .inputTailWind {
-    @apply bg-sky-100 py-1 px-2 shadow rounded-lg outline-none focus:ring-2 mr-2 transition-all duration-300
-  };
+    @apply block min-h-[auto] py-1 px-2 shadow rounded-lg outline-none focus:ring-1 mr-2 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-70 transition-all duration-200 ease-out 
+  }; 
+  /* .inputTailWind {
+    @apply  w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0 
+  } */
+  /* .inputTailWind {
+    @apply  w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200  
+  } */
 }

@@ -8,8 +8,6 @@ import { useEffect, useState } from 'react';
 const useList = (getObject) => {
 
     const [value, setValue] = useState([]);
-    // console.log('Items en la lista: ', value)
-
     useEffect(() => { 
         getObject()
             .then(response => {
@@ -48,16 +46,27 @@ const useList = (getObject) => {
     };
 
     /**
-     * Actualiza el campo de la lista en la posicion dada con el valor dado
+     * Actualiza con el valor dado el campo de la lista indicado en la posicion dada 
      * @param {number} index Posición en la lista
      * @param {string} field Nombre del campo del item de la lista
      * @param {*} newValue Nuevo valor del campo del item de la lista
      */
-    const update = (index, field, newFieldValue) => {
+    const updateField = (index, field, newFieldValue) => {
       const newList = value;
       newList[index][field] = newFieldValue;
       setValue([...newList]);
     };
+    
+    /**
+     * Actualiza el item (objeto) recibido en la posicion dada
+     * @param {*} index Posición en la lista
+     * @param {*} newItem Nuevo item (objeto) a actualizar en la lista
+     */
+    const updateItem = (index, newItem) => {
+        const newList = value;
+        newList[index] = newItem;
+        setValue([...newList]);
+      };
 
     /**
      * Elimina todos los elementos de la lista
@@ -76,18 +85,7 @@ const useList = (getObject) => {
      * Ordena alfableticamente la lista
      * @param {*} language 'es' para español (por omision). Use country Code ISO2
      */
-    const sort = (language = 'es', field = 'text') => {
-        // De esta manera no re-renderiza la lista en TaskList.jsx al ordenarla
-        // setValue(newList.sort());
-
-        // De esta manera tampoco re-renderiza la lista en TaskList.jsx
-        // const newList = value;
-        // newList.sort(
-        //     (a, b) => a.localeCompare(b, language, { ignorePunctuation: true }),
-        // );
-        // setValue(newList);
-
-        // Al crearla desde cero (con push) si controla el cambio y se re-renderiza la lista
+    const sort = (language = 'es', field = 'article') => {
         const newList = [];
         value.sort(
             (a, b) => a[field].localeCompare(b[field], language, { ignorePunctuation: true }),
@@ -102,25 +100,11 @@ const useList = (getObject) => {
      * Invierte el orden de la lista
      */
     const reverse = () => {
-        // De esta manera no se re-renderiza
-        // setValue(value.reverse());
-
-        // de esta manera si se re-renderiza en TaskList.jsx
-        /*
-        const newList = [];
-        for (let i = value.length - 1; i >= 0; i--) {
-            newList.push(value[i]);
-        }
-        setValue(newList);
-        // console.log('Lista invertida: ', value);
-        */
-
-       // Si uso [...] tambien se renderiza
         setValue([...value.reverse()]);
     };
 
     return {
-            value, setValue, get, push, remove, update, clear, sort, reverse, isEmpty,
+            value, setValue, get, push, remove, updateField, updateItem, clear, sort, reverse, isEmpty,
         };
 };
 
