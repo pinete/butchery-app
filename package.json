@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@3m1/service-worker-updater": "^2.0.3",
+    "@material-tailwind/react": "^2.0.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -38,12 +39,15 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:storybook/recommended"
     ]
   },
   "browserslist": {
@@ -59,9 +63,24 @@
     ]
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.0.17",
+    "@storybook/addon-interactions": "^7.0.17",
+    "@storybook/addon-links": "^7.0.17",
+    "@storybook/addon-styling": "^1.0.8",
+    "@storybook/blocks": "^7.0.17",
+    "@storybook/preset-create-react-app": "^7.0.17",
+    "@storybook/react": "^7.0.17",
+    "@storybook/react-webpack5": "^7.0.17",
+    "@storybook/testing-library": "^0.0.14-next.2",
     "autoprefixer": "^10.4.14",
+    "babel-plugin-named-exports-order": "^0.0.2",
     "cypress": "^12.12.0",
     "eslint-plugin-cypress": "^2.13.3",
-    "tailwindcss": "^3.3.2"
+    "eslint-plugin-storybook": "^0.6.12",
+    "postcss": "^8.4.24",
+    "prop-types": "^15.8.1",
+    "storybook": "^7.0.17",
+    "tailwindcss": "^3.3.2",
+    "webpack": "^5.84.1"
   }
 }

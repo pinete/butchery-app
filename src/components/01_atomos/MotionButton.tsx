@@ -1,4 +1,5 @@
 //import React from 'react'
+
 import { motion } from 'framer-motion'
 import { 
   BsTrash as Trash, 
@@ -12,6 +13,7 @@ import {
 
 /**
  * 
+ * @param type type en html (button, submit, ...)
  * @param textButton Texto en el botón
  * @param bg Color e intensidad de fondo. Por omision 'sky-300'
  * @param bgHover Color e intensidad de fondo si puntero sobre botón . Por omision 'sky-400'
@@ -23,8 +25,23 @@ import {
  * @returns 
  */
 
+// type MotionButtonProps = {
+//   //type?:'button' | 'submit' | 'reset';
+//   textButton?: string | undefined;
+//   textColorHover?: string | undefined;
+//   bg?: string | undefined;
+//   bgHover?: string | undefined;
+//   bgDark?: string | undefined;
+//   bgHoverDark?: string | undefined;
+//   adjunctClass?: string | undefined;
+//   icon?:string;
+//   // onsubmit?: (data:T)=>void
+//   onclick?:()=>void
+// }
+
 const MotionButton = (
   {
+    //type,
     textButton='',
     textColorHover='white',
     bg='sky-300',
@@ -33,12 +50,13 @@ const MotionButton = (
     bgHoverDark='sky-800',
     adjunctClass='',
     icon='',
-    onclick=()=>{}
-  }
+    //onsubmit = (data:T)=>{},
+    onclick = ()=>{}
+  }:MotionButtonProps
 ) => {
   // const btnTailWind = `shadow py-1 px-2 m-1 rounded hover:text-${textColorHover} transition-all duration-200 bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`
 
-  const showText = () => {
+  const showIcon = () => {
     switch (icon) {
       case 'Trash': 
         return <Trash className='text-xl' />
@@ -48,8 +66,8 @@ const MotionButton = (
         return <LockFill className='text-xl' />
       case 'Tools':
         return <Tools className='text-xl' />
-        case 'Pencil':
-          return <Pencil className='text-xl' />
+      case 'Pencil':
+        return <Pencil className='text-xl' />
       default:
         break;
     }
@@ -58,15 +76,16 @@ const MotionButton = (
   return (
   <>
     <motion.button
-      type={'button'}
+      type='button'
       title={`Button with text ${textButton} and/or icon ${icon}`}
       whileHover={{ scale:1.1 }}
       whileTap={{ scale: 0.9 }} 
       className={`btnTailWind hover:text-${textColorHover} bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`}
       onClick={ onclick }
+      // onSubmit={ onsubmit }
     > 
     <p className='flex items-center'>
-        {showText()} {textButton}
+        {showIcon() ? showIcon() : textButton}
     </p>
     </motion.button>
   </>

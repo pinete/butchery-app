@@ -1,5 +1,6 @@
 import * as React from 'react'; // Para que funcione con Flow
 import { Header } from './components/03_organismos/Header';
+import IcoBurger from './components/01_atomos/IcoBurger';
 import TaskList from './components/04_plantillas/lists/TaskList'
 import Settings from './settings/Settings';
 // importamos animaciones framer-motion
@@ -14,6 +15,8 @@ interface configProps {
   theme: string, 
   lang: string
 }
+
+const user={name:'Joaquin Morales'}
 
 const App = ():JSX.Element => {
   // Para que la aplicación esté al tanto de los cambios de modo de pantalla...
@@ -48,12 +51,16 @@ const App = ():JSX.Element => {
     
     // Si config.theme es 'dark' añade la clase 'dark'
     <div className={`${dark === 'dark' ? 'dark' : ''}`}> {/* añadimos clase dark si en localStorage la variable dark es true */}
+      <Header user={user} onLogin={():void=>{}} onLogout={():void=>{}} onCreateAccount={():void=>{}} />
       <div 
-        className={`h-screen p-4 flex-col  bg-gray-100
+        className={`h-screen mt-20 p-4 flex-col  bg-gray-100
            dark:bg-slate-800 transition
            dark:text-gray-50
         `}> {/* Control de modo oscuro. Si 'dark' entonces bg-slate-800  y text-gray-50*/}
+        
+        
         <TaskList showSettings={showSettings} setShowSettings={setShowSettings}/>
+        
         {/* Componente Settings envuelto en un div con animaciones motion 
             Funciona la animacion de entrada pero no la salida al haber 
             sido desmontado el componente */}

@@ -172,12 +172,13 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
   return (
     <>
       <header className='flex justify-between max-h-full'>
-        <h1 className='text-3xl text-sky-700 font-semibold dark:text-sky-300'>
-          Butchery v2
+        <h1 className='mt-2 text-3xl text-sky-700 font-semibold dark:text-sky-300'>
+          Encargos
         </h1>
         <MotionButton
           key={`btn6`}
-          textButton={!showSettings ? 'Show Settings' : 'Hide Settings'}
+          textButton={!showSettings ? `Mostrar` : `Ocultar`}
+          icon={'Tools'}
           onclick={toggleSettings}
         />
       </header>
@@ -250,7 +251,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     className='flex items-center list-none' >
                     {/* Boton DEL */}
                     <MotionButton 
-                      // key={`btn1${index}`}
+                      key={`btn1${index}`}
                       textColorHover='white'
                       bg='red-400'
                       bgHover='red-600'
@@ -261,13 +262,13 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     />
                     {/* Boton UPDATE */}
                     <MotionButton 
-                      // key={`btn1${index}`}
+                      key={`btn1-${index}`}
                       icon='Pencil'
                       onclick={()=>changeTask(index)}
                     />
                     {/* Boton DONE/TODO */}
                     <MotionButton 
-                      // key={`btn2${index}`}
+                      key={`btn2-${index}`}
                       textButton={task.completed ? 'Done' : 'ToDo'}
                       textColorHover={'white'}
                       bg={task.completed ? 'amber-400' : 'lime-400'}
@@ -278,7 +279,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     />
                     {/* Texto de la tarea */}
                     <span 
-                      // key={`s1${index}`} 
+                      key={`span1-${index}`} 
                       className={`ml-2 text-sm italic dark:text-gray-100 ${
                           task.completed ? 'text-gray-400 line-through' :  'text-gray-800'
                         }`
@@ -305,7 +306,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
           {/* Boton SORT */}
           <MotionButton 
             key={`btn4`}
-            textButton='Sort'
+            textButton='Ordenar'
             textColorHover='white'
             bg={'purple-400'}
             bgHover={'purple-600'}
@@ -316,7 +317,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
           {/* Boton REVERSE */}
           <MotionButton 
             key={`btn5`}
-            textButton='Reverse'
+            textButton='Invertir'
             textColorHover='white'
             bg={'teal-400'}
             bgHover={'teal-600'}
