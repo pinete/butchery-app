@@ -5,6 +5,8 @@ import TaskList from './components/04_plantillas/lists/TaskList'
 import Settings from './settings/Settings';
 // importamos animaciones framer-motion
 import { motion, AnimatePresence } from 'framer-motion'
+// Para Ejemplos
+import ExampleTable from './components/04_plantillas/tables/ExampleTable';
 
 /**
  * Función Anónima para crear un Componente principal
@@ -60,6 +62,7 @@ const App = ():JSX.Element => {
         
         
         <TaskList showSettings={showSettings} setShowSettings={setShowSettings}/>
+        <ExampleTable />
         
         {/* Componente Settings envuelto en un div con animaciones motion 
             Funciona la animacion de entrada pero no la salida al haber 
