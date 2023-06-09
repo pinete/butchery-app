@@ -3,6 +3,7 @@ import { SiFirebase } from 'react-icons/si'
 import { AppContext } from '../App'
 import { getAuth, signOut } from "firebase/auth";
 import { toast } from 'react-hot-toast';
+import ModalLogin from '../04_plantillas/dialog/ModalLogin'
 
 export const Header = () => {
   const { setRoute, setUser, user } = useContext(AppContext)
@@ -46,6 +47,7 @@ export const Header = () => {
               <button 
                 id='btnLogin'
                 className='bg-sky-500 text-white py-1 px-3 rounded-full hover:bg-sky-700 transition' 
+                // onClick={()=>setRoute('login')}
                 onClick={()=>setRoute('login')}
               >
                 Login

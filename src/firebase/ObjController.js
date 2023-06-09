@@ -1,4 +1,4 @@
-import { addDoc, getDocs, collection, setDoc, doc, deleteDoc } from 'firebase/firestore'
+import { addDoc, getDocs, collection, setDoc, doc, deleteDoc} from 'firebase/firestore'
 import { db } from './index'
 
 /**
@@ -23,6 +23,57 @@ export const getObjects = async (collect) => {
     return { ...doc.data(), id: doc.id } 
   })
   return object
+}
+
+/**
+ * Función para devolver querySnapshot como un array de objetos simplificado  
+ * @param {string} collect Colección a leer
+ * @returns Object
+ * */ 
+export const getSimplifiedObjects = async (collect) => {
+  const arrayResultante = [];
+  //const querySnapshot = await getDocs(collection(db, collect), orderBy('timestamp'));
+  const querySnapshot = await getDocs(collection(db, collect));
+  console.log(querySnapshot)
+  const documentos = querySnapshot.docs;
+  // Iterar sobre los documentos del querySnapshot
+  for (let i = 0; i < documentos.length; i++) {
+    const doc = documentos[i];
+
+    // Extraer las propiedades del documento
+    const propiedades = doc.data();
+
+    // Crear un nuevo objeto simplificado con las propiedades deseadas
+    const objetoSimplificado = { pos: (i + 1)};
+    for (const propiedad in propiedades) {
+      if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
+        objetoSimplificado[propiedad] = propiedades[propiedad];
+      }
+    }
+
+    // Agregar el objeto al array resultante
+    arrayResultante.push(objetoSimplificado);
+  }
+  /*
+  querySnapshot.forEach((doc, index) => {
+    // Extraer las propiedades del documento
+    const propiedades = doc.data();
+
+    // Crear un nuevo objeto simplificado con las propiedades deseadas
+    const objetoSimplificado = { pos: (index + 1 ).toString() };
+    console.log(objetoSimplificado)
+    for (const propiedad in propiedades) {
+      if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
+        objetoSimplificado[propiedad] = propiedades[propiedad];
+      }
+    }
+
+    // Agregar el objeto al array resultante
+    arrayResultante.push(objetoSimplificado);
+  });
+  */
+
+  return arrayResultante;
 }
 
 /**
@@ -70,6 +121,8 @@ export const updateObject = (obj, collect) => {
 export const deleteObject = async (obj, collect) => {
   await deleteDoc(doc(db, collect, obj.id));
 }
+
+
 
 
 

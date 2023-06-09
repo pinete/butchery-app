@@ -21,7 +21,7 @@ const handleButtonUpdateClick = () => {
 }
 
 const renderButtons = () => {
-  return ( 'prueba'
+  return ('prueba'
     // <div className="inline-flex">
     //   <button 
     //     className="bg-gray-300 hover:bg-red-400 text-red-800 font-bold py-2 px-4 rounded-l"
@@ -33,8 +33,6 @@ const renderButtons = () => {
   )
 }
   
-
-
 const meta = {
   title: 'Prueba/GenericTable',
   component: GenericTable,

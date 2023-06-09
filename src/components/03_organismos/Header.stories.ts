@@ -11,7 +11,7 @@ const meta = {
     user:{
       name: 'Jane Doe',
     }, 
-    onLogin:():void=>{}, 
+    onLogin:():JSX.Element | void => {}, 
     onLogout:():void=>{},
     onCreateAccount:():void=>{},
   },
@@ -20,12 +20,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const LoggedIn: Story = {
+export const Logged: Story = {
   args: {
     user: {
       name: 'Francisco Diosdado',
     },
+    //onLogin:()=>{alert('Has pulsado el boton Login')},
+    onLogout:()=>{alert('Has pulsado el boton Logout')},
+    //onCreateAccount:()=>{alert('Has pulsado el boton Sign up')}
   },
 };
 
-export const LoggedOut: Story = {};
+export const NoLogged: Story = {
+
+};

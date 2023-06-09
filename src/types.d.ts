@@ -9,7 +9,7 @@ interface MotionButtonProps {
   adjunctClass?: string | undefined;
   icon?:string;
   // onsubmit?: (data:T)=>void
-  onclick?:()=>void
+  onclick?:() => React.JSX.Element | void;
 }
 
 interface MotionInputProps {

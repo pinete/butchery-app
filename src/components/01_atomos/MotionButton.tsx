@@ -25,23 +25,8 @@ import {
  * @returns 
  */
 
-// type MotionButtonProps = {
-//   //type?:'button' | 'submit' | 'reset';
-//   textButton?: string | undefined;
-//   textColorHover?: string | undefined;
-//   bg?: string | undefined;
-//   bgHover?: string | undefined;
-//   bgDark?: string | undefined;
-//   bgHoverDark?: string | undefined;
-//   adjunctClass?: string | undefined;
-//   icon?:string;
-//   // onsubmit?: (data:T)=>void
-//   onclick?:()=>void
-// }
-
 const MotionButton = (
   {
-    //type,
     textButton='',
     textColorHover='white',
     bg='sky-300',
@@ -51,7 +36,8 @@ const MotionButton = (
     adjunctClass='',
     icon='',
     //onsubmit = (data:T)=>{},
-    onclick = ()=>{}
+    onclick = ():JSX.Element | void => {}
+    //onclick = ():React.MouseEventHandler<HTMLButtonElement> | void => {}
   }:MotionButtonProps
 ) => {
   // const btnTailWind = `shadow py-1 px-2 m-1 rounded hover:text-${textColorHover} transition-all duration-200 bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`

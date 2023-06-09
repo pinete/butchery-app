@@ -7,6 +7,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore'
 
 // Your web app's Firebase configuration (produccion)
+// NOTA: La misma por ahora. Para produccion cambiar la constante firebaseConfig
 const firebaseConfig = {
     apiKey: "AIzaSyCCqp6u4LCkVQU420V-I_hBOW6CTy0a-yE",
     authDomain: "butchery-app.firebaseapp.com",
@@ -16,7 +17,7 @@ const firebaseConfig = {
     appId: "1:79803408142:web:124db859e685639cd4815f"
 };
 // Your web app's Firebase configuration (desarrollo o test)
-// NOTA: La misma por ahora
+
 const developmentFirebaseConfig = {
   apiKey: "AIzaSyCCqp6u4LCkVQU420V-I_hBOW6CTy0a-yE",
     authDomain: "butchery-app.firebaseapp.com",

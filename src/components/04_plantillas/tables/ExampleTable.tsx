@@ -1,13 +1,36 @@
 import React from 'react';
 import GenericTable from '../../03_organismos/GenericTable';
-
-const data = [
-  { nombre: 'Antonio', edad: '30', dni: '23332332A' },
-  { nombre: 'Pepe', edad: '20', dni: '23332333A' },
-  { nombre: 'Juan', edad: '40', dni: '23332334A' },
-];
+import {  getSimplifiedObjects } from '../../../firebase/ObjController';
+import { ObjListener } from '../../../firebase/ObjListener';
 
 const ExampleTable = () => {
+  // Para comprobar si hay que volver a leer la DB por producirse un cambio
+  let {isChanged, setIsChanged} = ObjListener('tasks')
+
+  /**
+   * Captura el objeto en la base de datos de la colección dada
+   * @param collect Nombre de la coleccion
+   * @param setTasks Función de useState donde se guarda el objeto
+   */
+  const capturaObjeto = (collect:string, setTasks:any)=>{
+    getSimplifiedObjects('tasks')
+      .then ((r) => { 
+        setTasks(r) 
+      }) 
+      .catch((e) => console.error(e))
+      .finally(() => setIsChanged(false))
+  }
+
+  const [tasks, setTasks] = React.useState([{}])
+  
+  React.useEffect(() => {
+    capturaObjeto('tasks', setTasks)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChanged])
+  
+  const data = tasks
+  //console.log('Tasks: ',tasks)
+  
   const handleButtonDeleteClick = () => {
     alert('Ha pulsado el botón Del');
   };

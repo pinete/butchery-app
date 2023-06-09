@@ -182,7 +182,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
           onclick={toggleSettings}
         />
       </header>
-      <div>
+      <div className='justify-between max-h-full'>
         <div className='my-4'>
           <MotionInput 
             bg={'sky-100'}
