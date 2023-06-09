@@ -20,7 +20,7 @@ const handleButtonUpdateClick = () => {
   return alert(message)
 }
 
-const renderButtons = () => {
+const renderLineButtons = () => {
   return ('prueba'
     // <div className="inline-flex">
     //   <button 
@@ -50,7 +50,7 @@ type Story = StoryObj<typeof meta>;
 export const Table: Story = {
   args: {
     data: objectFields,
-    renderButtons: renderButtons
+    renderLineButtons: renderLineButtons
   } 
 }
 

@@ -38,12 +38,12 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
   const [newIndex, setNewIndex] = useState<number>(-1)
   const tasks = useList(() => getObjects('tasks'))
   const alert = useSweetAlert()
-  const [btnClick, setBtnClick] = useState<boolean>(false);
+  const [btnUpdClick, setBtnUpdClick] = useState<boolean>(false);
 
   //const articleRef = useRef<HTMLInputElement | null>(null)
   
   const updateTask=(index:number)=>{
-    setBtnClick(!btnClick) // Cambiamos el boton a Nueva Linea
+    setBtnUpdClick(true) // Cambiamos el boton a Nueva Linea
     if (newTask.article === "" || newTask.quantity === '' ) {
       //TODO aviso de que tienen que estar rellenos
       return
@@ -95,11 +95,10 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
   };
 
   const changeTask = (index:number) => {
-    setBtnClick(!btnClick)
+    setBtnUpdClick(true)
     setNewTask(tasks.get(index))
     setNewIndex(index)
     document.documentElement.scrollTo(0, 0); // ir al inicio de la página
-
   }
 
   /**
@@ -114,7 +113,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
         .then(() => tasks.remove(index))
         .catch((e) => console.error(e))
     }
-    setBtnClick(false)
+    setBtnUpdClick(false)
     setNewTask(emptyNewTask)
     alert.onDelete(deleteItemDBAndList, 'task')
   }    
@@ -140,7 +139,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
       .catch((e) => {
         console.error(e)
       })
-    setBtnClick(false)
+    setBtnUpdClick(false)
     setNewTask(emptyNewTask)
   };
 
@@ -235,8 +234,8 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
           {/* Button NewTask */}
           <MotionButton 
             // key={`btn7`}
-            textButton={btnClick ? 'Actualiza Linea':'Nueva Linea'}
-            onclick={btnClick ? ()=> updateTask(newIndex) : addNewTask}
+            textButton={btnUpdClick ? 'Actualiza Linea':'Nueva Linea'}
+            onclick={btnUpdClick ? ()=> updateTask(newIndex) : addNewTask}
           />
         </div>
         { tasks.isEmpty()

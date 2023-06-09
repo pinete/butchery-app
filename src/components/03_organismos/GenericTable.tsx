@@ -1,9 +1,9 @@
 import React from 'react'
 
-
 export type TableProps<T> = {
   data:T[];
-  renderButtons: (item: T) => React.ReactNode
+  fieldsToShow?:string[];
+  renderLineButtons?: (item: T) => React.ReactNode
 }
 
 const valueField = (field:any)=>{
@@ -14,8 +14,18 @@ const valueField = (field:any)=>{
   }
 }
 
-const GenericTable = < T extends Record<string, any>>({data, renderButtons}:TableProps<T>)=>{
-  const tableHeaders = Object.keys(data[0] || {})
+/**
+ * Componente genérico para mostrar una tabla con los fields de un objeto y con ActionsButtons al final de cada row
+ * @param  data - array de objetos
+ * @param  fieldsToShow - Optional array de fields a mostrar. Si no existe, pinta todos los fields en el orden en el que firebase devuelve el objeto 
+ * @param renderButtons - Botones React.ReactNode
+ * @returns Tabla JSX.Element
+ */
+const GenericTable = < T extends Record<string, any>>({data, fieldsToShow, renderLineButtons}:TableProps<T>)=>{
+  let tableHeaders:string[]
+  if (fieldsToShow === undefined) tableHeaders = Object.keys(data[0] || {}); 
+  else tableHeaders = fieldsToShow
+  
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -36,9 +46,10 @@ const GenericTable = < T extends Record<string, any>>({data, renderButtons}:Tabl
                       {header}
                     </th>
                   ))}
-                  <th>Actions</th>
+                  {renderLineButtons && <th>Actions</th>}
                 </tr>
               </thead>
+
               <tbody>
                 {/* Mapeamos las filas */}
                 {data.map((row, rowIndex) => (
@@ -64,11 +75,12 @@ const GenericTable = < T extends Record<string, any>>({data, renderButtons}:Tabl
                         : 'border-b bg-white dark:border-neutral-500 dark:bg-neutral-600'
                       }
                     >
-                      {renderButtons(row)}
+                      {renderLineButtons && renderLineButtons(row)}
                     </td>
                   </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
         </div>

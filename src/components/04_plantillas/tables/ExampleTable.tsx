@@ -40,7 +40,11 @@ const ExampleTable = () => {
     return alert(message)
   }
 
-  const renderButtons = () => {
+  // Definimos que campos queremos en la tabla y en que orden
+  const tableHeaders:string[]=['pos','article','description','quantity', 'completed']
+
+  // Definimos los botones al final de cada linea de la tabla
+  const renderLineButtons = () => {
     return (
     <div className="inline-flex">
       <button 
@@ -55,7 +59,9 @@ const ExampleTable = () => {
 
   return (
     <div>
-      <GenericTable data={data} renderButtons={renderButtons} />
+      {/* fieldsToShow opcional. Si no existe renderiza todos los campos en el orden en que los devuelve firebase (arbitrario) */}
+      {/* renderButtons opcional. Si no existe no renderiza los botones ni la cabecera 'Actions' */}
+      <GenericTable data={data} fieldsToShow={tableHeaders} renderLineButtons={renderLineButtons} />
     </div>
   );
 };
