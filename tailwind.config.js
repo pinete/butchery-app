@@ -26,13 +26,19 @@ module.exports = withMT({
         // sky:colors.sky,
         // teal:colors.teal,
         // white: colors.white,
+
+        // sky: colors.lightBlue,
+        // stone: colors.warmGray,
+        // neutral: colors.trueGray,
+        // gray: colors.coolGray,
+        // slate: colors.blueGray,
       }
     },
   },
   plugins: [],
   safelist: [
     {
-      pattern: /(bg|text|border)-(transparent|current|amber|black|emerald|gray|indigo|lime|purple|red|sky|teal|white)/
+      pattern: /(bg|text|border)-(transparent|current|amber|neutral|black|emerald|gray|indigo|lime|purple|red|sky|teal|white)/
     }
   ]
 })

@@ -1,9 +1,10 @@
 import React from 'react'
 
 export type TableProps<T> = {
-  data:T[];
-  fieldsToShow?:string[];
-  renderLineButtons?: (item: T) => React.ReactNode
+  data: T[];
+  fieldsToShow?: string[];
+  renderHeadButtons?: () => React.ReactNode;
+  renderLineButtons?: (item: T) => React.ReactNode;
 }
 
 const valueField = (field:any)=>{
@@ -21,7 +22,7 @@ const valueField = (field:any)=>{
  * @param renderButtons - Botones React.ReactNode
  * @returns Tabla JSX.Element
  */
-const GenericTable = < T extends Record<string, any>>({data, fieldsToShow, renderLineButtons}:TableProps<T>)=>{
+const GenericTable = < T extends Record<string, any>>({data, fieldsToShow, renderHeadButtons, renderLineButtons}:TableProps<T>)=>{
   let tableHeaders:string[]
   if (fieldsToShow === undefined) tableHeaders = Object.keys(data[0] || {}); 
   else tableHeaders = fieldsToShow
@@ -46,38 +47,57 @@ const GenericTable = < T extends Record<string, any>>({data, fieldsToShow, rende
                       {header}
                     </th>
                   ))}
-                  {renderLineButtons && <th>Actions</th>}
+                  {renderLineButtons && (
+                    <th>Actions
+                      {renderHeadButtons && (
+                        <span 
+                          key = {'buttonsHeader'} 
+                          className="px-6 py-4"
+                        > 
+                          {renderHeadButtons()}
+                        </span>
+                        )
+                      } 
+                    </th> )                      
+                  }
                 </tr>
               </thead>
 
               <tbody>
                 {/* Mapeamos las filas */}
                 {data.map((row, rowIndex) => (
-                  <tr key={`line${rowIndex}`} className="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
-                    {/* Mapeamos los campos de cada fila */}
-                    {tableHeaders.map((header, headerIndex) => (
-                      <td
-                        key={`field${headerIndex}`} 
+                    <tr 
+                      key={`line${rowIndex}`} 
+                      className="border-b hover:font-bold"
+                      onClick={()=>alert(`Has hecho onClick sobre la linea ${row.pos}`)}
+                    >
+                      {/* Mapeamos los campos de cada fila */}
+                      {tableHeaders.map((header, headerIndex) => (
+                        
+                        <td 
+                          key={`field${headerIndex}`} 
+                          className={
+                            rowIndex % 2 === 0 
+                            ? 'border-b bg-neutral-200  dark:border-neutral-500 dark:bg-neutral-700'
+                            : 'border-b bg-white  dark:border-neutral-500 dark:bg-neutral-600'
+                          }
+                        >
+                          {valueField(row[header])}                    
+                        </td>
+                        
+                      ))}
+                      <td 
+                        key={`buttonsField${rowIndex}`}
                         className={
                           rowIndex % 2 === 0 
                           ? 'border-b bg-neutral-200 dark:border-neutral-500 dark:bg-neutral-700'
                           : 'border-b bg-white dark:border-neutral-500 dark:bg-neutral-600'
                         }
                       >
-                        {valueField(row[header])}                    
+                        {renderLineButtons && renderLineButtons(row)}
                       </td>
-                    ))}
-                    <td 
-                      key={`buttonsField${rowIndex}`}
-                      className={
-                        rowIndex % 2 === 0 
-                        ? 'border-b bg-neutral-200 dark:border-neutral-500 dark:bg-neutral-700'
-                        : 'border-b bg-white dark:border-neutral-500 dark:bg-neutral-600'
-                      }
-                    >
-                      {renderLineButtons && renderLineButtons(row)}
-                    </td>
-                  </tr>
+                    </tr>
+                  
                 ))}
               </tbody>
 

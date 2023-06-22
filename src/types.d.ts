@@ -1,3 +1,13 @@
+/**
+ * key = ['FieldText', 'FieldArea']
+ */
+type FieldForm = {
+  key: string;
+  label: string;
+  type: string;
+  readOnly?: boolean;
+  isArea: boolean;
+};
 // interfaces para etiquetas de hipertexto con tailwind
 interface MotionButtonProps {
   textButton?: string | undefined;
@@ -7,6 +17,7 @@ interface MotionButtonProps {
   bgDark?: string | undefined;
   bgHoverDark?: string | undefined;
   adjunctClass?: string | undefined;
+  placeholder?:string,
   icon?:string;
   // onsubmit?: (data:T)=>void
   onclick?:() => React.JSX.Element | void;
@@ -20,6 +31,7 @@ interface MotionInputProps {
   textColorHover?:string, 
   placeHolder?:string,
   adjunctClass?:string,
+  placeholder?:string
 }
 
 interface MotionTextAreaProps {
@@ -31,5 +43,6 @@ interface MotionTextAreaProps {
   bgHoverDark?:string,
   textColorHover?:string,
   placeHolder?:string,
-  adjunctClass?:string
+  adjunctClass?:string,
+  placeholder?:string
 }

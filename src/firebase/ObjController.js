@@ -1,5 +1,13 @@
-import { addDoc, getDocs, collection, setDoc, doc, deleteDoc} from 'firebase/firestore'
-import { db } from './index'
+import { 
+  addDoc, 
+  getDocs, 
+  collection, 
+  setDoc, 
+  doc, 
+  deleteDoc, 
+  getDoc, 
+} from 'firebase/firestore'
+import {  db } from './index'
 
 /**
  * Guarda un nuevo objeto en la colección dada en la base de datos
@@ -24,6 +32,35 @@ export const getObjects = async (collect) => {
   })
   return object
 }
+export const getSimplifiedObjectById = async (collect, id) => {
+  //const [objeto, setObjeto] = useState<Objeto | null>(null);
+  //const [objeto, setObjeto] = useState(null);
+  
+  const arrayResultante = [];
+  const objetoSimplificado = {}
+  
+  const docRef = doc(db, collect, id);
+  const docSnap = await getDoc(docRef)
+  //const doc = await coleccion.doc(id).get();
+  const propiedades = docSnap.data();
+      if (docSnap.exists) {
+        //const objetoRecuperado = doc.data()// as Objeto;
+
+        for (const propiedad in propiedades) {
+          if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
+            objetoSimplificado[propiedad] = propiedades[propiedad];
+          }
+        }
+        arrayResultante.push(objetoSimplificado)
+        //console.log('objetoRecuperado: ',objeto)
+        console.log('objetoRecuperado: ',arrayResultante)
+      } else {
+        console.log('El documento no existe.');
+      }
+
+  //return objeto
+  return arrayResultante
+  }
 
 /**
  * Función para devolver querySnapshot como un array de objetos simplificado  
@@ -34,7 +71,6 @@ export const getSimplifiedObjects = async (collect) => {
   const arrayResultante = [];
   //const querySnapshot = await getDocs(collection(db, collect), orderBy('timestamp'));
   const querySnapshot = await getDocs(collection(db, collect));
-  console.log(querySnapshot)
   const documentos = querySnapshot.docs;
   // Iterar sobre los documentos del querySnapshot
   for (let i = 0; i < documentos.length; i++) {
@@ -45,6 +81,7 @@ export const getSimplifiedObjects = async (collect) => {
 
     // Crear un nuevo objeto simplificado con las propiedades deseadas
     const objetoSimplificado = { pos: (i + 1)};
+    //const objId = { pos: (i + 1)}
     for (const propiedad in propiedades) {
       if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
         objetoSimplificado[propiedad] = propiedades[propiedad];
@@ -54,24 +91,6 @@ export const getSimplifiedObjects = async (collect) => {
     // Agregar el objeto al array resultante
     arrayResultante.push(objetoSimplificado);
   }
-  /*
-  querySnapshot.forEach((doc, index) => {
-    // Extraer las propiedades del documento
-    const propiedades = doc.data();
-
-    // Crear un nuevo objeto simplificado con las propiedades deseadas
-    const objetoSimplificado = { pos: (index + 1 ).toString() };
-    console.log(objetoSimplificado)
-    for (const propiedad in propiedades) {
-      if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
-        objetoSimplificado[propiedad] = propiedades[propiedad];
-      }
-    }
-
-    // Agregar el objeto al array resultante
-    arrayResultante.push(objetoSimplificado);
-  });
-  */
 
   return arrayResultante;
 }
@@ -83,9 +102,9 @@ export const getSimplifiedObjects = async (collect) => {
  * @param {string} collect Colección en la base de datos
  * @returns action delete
  */
-export const toggleObjectKey = (obj, key, collect) => {
+export const toggleObjectKey = (obj, field, collect) => {
   const updatedObj = { ...obj };
-  updatedObj[key] = !obj[key];
+  updatedObj[field] = !obj[field];
   return setDoc(doc(db, collect, obj.id), updatedObj);
 }
 

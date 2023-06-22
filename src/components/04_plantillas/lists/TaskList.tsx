@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import useList from '../../../hooks/useList';
 import useSweetAlert from '../../../hooks/useSweetAlert'
 import { motion } from 'framer-motion'
@@ -6,6 +6,11 @@ import MotionButton from '../../01_atomos/MotionButton'
 import MotionTextArea from '../../01_atomos/MotionTextArea'
 import MotionInput from '../../01_atomos/MotionInput'
 import { addObject, deleteObject, getObjects, toggleObjectKey, updateObject } from '../../../firebase/ObjController'
+import ModalComponent from '../dialog/ModalComponent';
+import TableFam from '../tables/TableFam';
+import FormFam from '../forms/FormFam';
+import { GlobalContext } from '../../../context/GlobalContext';
+
 
 interface linTaskProps {
   completed:boolean,
@@ -40,6 +45,10 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
   const alert = useSweetAlert()
   const [btnUpdClick, setBtnUpdClick] = useState<boolean>(false);
 
+  //Capturamos las variables Globales
+  const globalState = useContext(GlobalContext);
+  console.log('GlobalState: ',globalState)
+
   //const articleRef = useRef<HTMLInputElement | null>(null)
   
   const updateTask=(index:number)=>{
@@ -57,6 +66,8 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
     .then((id) => {
       setNewTask(obj)
       tasks.updateItem(newIndex, newTask)
+      
+      
     })
     .catch((e) => {
       console.error(e)
@@ -94,6 +105,10 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
       .finally(() => setNewTask(emptyNewTask))
   };
 
+  /**
+   * Reconoce boton como update, captura el objeto de la linea, inicializa index y posiciona el cursos al principio de la página
+   * @param index 
+   */
   const changeTask = (index:number) => {
     setBtnUpdClick(true)
     setNewTask(tasks.get(index))
@@ -160,14 +175,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
    */
   const toggleSettings = () => {setShowSettings(!showSettings)}
   
-  // Configuracion base de TailWind.
-  /*
-  const btnTailWind = "shadow py-1 px-2 rounded hover:text-white transition duration-200"
-  const inputTailWind = "shadow py-1 px-2 rounded-lg outline-none focus:ring-2 mr-2 transition-all duration-300"
-  */
-  // ATENCION: Lo puedo usar así, insertandolo luego en la clase de esta forma: "className={`${inputTailWind} dark:bg-slate-700`}"
-  // pero tambien puedo crear la clase TailWind en index.css (abre el archivo CSS para ver como)
-  
+
   return (
     <>
       <header className='flex justify-between max-h-full'>
@@ -183,22 +191,56 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
       </header>
       <div className='justify-between max-h-full'>
         <div className='my-4'>
-          <MotionInput 
-            bg={'sky-100'}
-            bgHover={'sky-400'}
-            bgDark = {'slate-700'}
-            value={newTask.article}
-            // onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && addNewTask()} // añade nueva tarea al pulsar tecla 'ENTER' sobre el input
-            onChange={(e:React.ChangeEvent<HTMLInputElement>) => 
-              {
-                const newItem = {...newTask};
-                newItem.article = e.currentTarget.value
-                setNewTask(newItem);
+          <div className='flex items-center'>
+            <MotionInput key='inputArticle'
+              bg={'sky-100'}
+              bgHover={'sky-400'}
+              bgDark = {'slate-700'}
+              value={newTask.article}
+              // onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && addNewTask()} // añade nueva tarea al pulsar tecla 'ENTER' sobre el input
+              onChange={(e:React.ChangeEvent<HTMLInputElement>) => 
+                {
+                  const newItem = {...newTask};
+                  newItem.article = e.currentTarget.value
+                  setNewTask(newItem);
+                }
               }
-            }
-            placeholder={'¿Que quieres comprar?'}
-          />
-          <MotionInput 
+              placeholder={'¿Que quieres comprar?'}
+            />
+            <span key='ModalTableFam'>
+              {/* Modal de tabla de familias */}
+              {ModalComponent (
+                {
+                  title:'Familias', 
+                  buttonProps:{
+                    textColorHover: 'white',
+                    bg: 'sky-400',
+                    bgHover: 'sky-600',
+                    bgDark: 'sky-600',
+                    bgHoverDark: 'sky-800',
+                    icon: 'Search'}, 
+                  children:<TableFam />
+                }
+              )}
+            </span>
+            <span key ='ModalFormFam'>
+              {/* Modal de Formulario de familias */}
+              {ModalComponent (
+                {
+                  title:'Familias', 
+                  buttonProps:{
+                    textColorHover: 'white',
+                    bg: 'sky-400',
+                    bgHover: 'sky-600',
+                    bgDark: 'sky-600',
+                    bgHoverDark: 'sky-800',
+                    icon: 'Search'}, 
+                  children:FormFam ('p3z4Qar9MD8EWJTcW3Yn')
+                }
+              )}
+            </span>
+          </div>
+          <MotionInput key='inputQuantity'
             bg={'sky-100'}
             bgHover={'sky-400'}
             bgDark = {'slate-700'}
@@ -213,8 +255,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
             }
             placeholder={'¿Cuanto quieres?'}
           />
-          <MotionTextArea
-            // id='description'
+          <MotionTextArea key='textAreaDescription'
             textLabel={'¿Cómo lo quieres?'}
             bg= {'sky-100'}
             bgHover= {'sky-400'}
@@ -246,11 +287,11 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                   <motion.li 
                     initial={{ x: '100vw' }} 
                     animate = {{ x:0 }} 
-                    key={index} 
+                    key={`li_${index}`} 
                     className='flex items-center list-none' >
                     {/* Boton DEL */}
                     <MotionButton 
-                      key={`btn1${index}`}
+                      key={`btnDel${index}`}
                       textColorHover='white'
                       bg='red-400'
                       bgHover='red-600'
@@ -261,13 +302,13 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     />
                     {/* Boton UPDATE */}
                     <MotionButton 
-                      key={`btn1-${index}`}
+                      key={`btnUpd-${index}`}
                       icon='Pencil'
                       onclick={()=>changeTask(index)}
                     />
                     {/* Boton DONE/TODO */}
                     <MotionButton 
-                      key={`btn2-${index}`}
+                      key={`btnCompleted-${index}`}
                       textButton={task.completed ? 'Done' : 'ToDo'}
                       textColorHover={'white'}
                       bg={task.completed ? 'amber-400' : 'lime-400'}
@@ -278,10 +319,14 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     />
                     {/* Texto de la tarea */}
                     <span 
-                      key={`span1-${index}`} 
-                      className={`ml-2 text-sm italic dark:text-gray-100 ${
-                          task.completed ? 'text-gray-400 line-through' :  'text-gray-800'
-                        }`
+                      key={`spanTxt-${index}`} 
+                      className=
+                      {`
+                        ml-2 
+                        text-sm 
+                        italic
+                         dark:text-gray-100 
+                        ${task.completed ? 'text-gray-400 line-through' :  'text-gray-800'}`
                       }
                     >
                       {`${task.article} - ${task.quantity} - ${task.description}`}

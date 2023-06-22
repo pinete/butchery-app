@@ -5,10 +5,13 @@ import {
   BsTrash as Trash, 
   BsFillUnlockFill as UnlockFill, 
   BsLockFill as LockFill,
-  BsTools as Tools
+  BsTools as Tools,
+  BsPencil as Pencil,
+  BsSearch as Search
 } from 'react-icons/bs'
+import {SiAddthis as Add} from 'react-icons/si'
 import { 
-  SlPencil as Pencil
+  
 } from 'react-icons/sl'
 
 /**
@@ -21,7 +24,7 @@ import {
  * @param bgDark Color e intensidad de fondo si modo oscuro. Por omisión 'sky-600'
  * @param bgHoverDark Color e intensidad de fondo si puntero sobre botón y modo oscuro. Por omisión 'sky-800'
  * @param adjunctClass Cualquier string a adjuntar a la clase (formato TailWind)
- * @param icon Icono. Admite: Trash, Pencil, UnlockFill, LockFill, Tools
+ * @param icon Icono. Admite: Trash, Pencil, UnlockFill, LockFill, Tools, Search, Add
  * @returns 
  */
 
@@ -54,6 +57,10 @@ const MotionButton = (
         return <Tools className='text-xl' />
       case 'Pencil':
         return <Pencil className='text-xl' />
+      case 'Search':
+        return <Search className='text-xl' />
+      case 'Add':
+        return <Add className='text-xl' />
       default:
         break;
     }

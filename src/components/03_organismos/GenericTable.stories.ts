@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import GenericTable from './GenericTable';
-
-
+import parse from 'html-react-parser';// Para traducir a React un string con html
 
 const objectFields = [
   { pos:1, nombre: 'Antonio', edad: '30', dni: '23332332A' },
@@ -9,29 +8,17 @@ const objectFields = [
   { pos:3, nombre: 'Juan', edad: '40', dni: '23332334C' },   
 ]
 
-const handleButtonDeleteClick = () => {
-  const message='Has pulsado el boton Delete'
-  alert(message)
-}
-
-// const handleButtonUpdateClick = (item: Record<string, any>) => {
-const handleButtonUpdateClick = () => {
-  const message='Has pulsado el boton Update'
-  return alert(message)
-}
+// const handleOnDelClick = () => {alert('has pulsado el boton Del');}
+// const handleOnUpdClick = () => {alert('has pulsado el boton Upd');}
 
 const renderLineButtons = () => {
-  return ('prueba'
-    // <div className="inline-flex">
-    //   <button 
-    //     className="bg-gray-300 hover:bg-red-400 text-red-800 font-bold py-2 px-4 rounded-l"
-    //     onClick={handleButtonDeleteClick}>Del</button>
-    //   <button
-    //     className="bg-gray-300 hover:bg-sky-400 text-sky-800 font-bold py-2 px-4 rounded-r" 
-    //     onClick={handleButtonUpdateClick}>Upd</button>
-    // </div>
-  )
-}
+  const textHtml = parse(`
+    <div className="inline-flex">
+      <button className="bg-gray-300 hover:bg-red-400 text-red-800 font-bold py-2 px-4 rounded-l">Del</button>
+      <button className="bg-gray-300 hover:bg-sky-400 text-sky-800 font-bold py-2 px-4 rounded-r">Upd</button>
+    </div>`)
+  return textHtml
+};
   
 const meta = {
   title: 'Prueba/GenericTable',

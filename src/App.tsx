@@ -6,6 +6,11 @@ import Settings from './settings/Settings';
 import { motion, AnimatePresence } from 'framer-motion'
 // Un Ejemplo de una tabla
 import ExampleTable from './components/04_plantillas/tables/ExampleTable';
+//import UploadImage from './components/utils/UploadImage';
+//import DownloadImage from './components/utils/DownloadImage';
+import GlobalProvider from './context/GlobalContext';
+
+
 
 interface configProps {
   theme: string, 
@@ -47,11 +52,9 @@ const App = ():JSX.Element => {
    */
   const toggleDark = () => dark === 'dark' ? setDark('ligth') : setDark('dark');
 
-
-
   return (
-    
-    // Si config.theme es 'dark' añade la clase 'dark'
+    <GlobalProvider>
+    {/* // Si config.theme es 'dark' añade la clase 'dark' */}
     <div className={`${dark === 'dark' ? 'dark' : ''}`}> {/* añadimos clase dark si en localStorage la variable dark es true */}
       {/* Header con usuario logueado*/}
       <Header user={user}  onLogout={()=>{alert('Ha pulsado LogOut')}} />
@@ -64,7 +67,9 @@ const App = ():JSX.Element => {
            dark:text-gray-50
         `}> {/* Control de modo oscuro. Si 'dark' entonces bg-slate-800  y text-gray-50*/}
         <TaskList showSettings={showSettings} setShowSettings={setShowSettings}/>
+        
         <ExampleTable />
+        {/* {UploadImage ("image")} */}
         
         {/* Componente Settings envuelto en AnimatePresence que 
           permite continuar la animación cuando se desmonta el componente */}
@@ -85,6 +90,7 @@ const App = ():JSX.Element => {
           </AnimatePresence>
       </div>
     </div>
+    </GlobalProvider>
   );
 };
 
