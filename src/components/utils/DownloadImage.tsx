@@ -35,7 +35,7 @@ const DownloadImage = (
       <img 
         key= {`img ${storageImgName}`} 
         
-        alt={`${storageImgName}`}
+        alt={`Imagen a mostrar: ${storageImgName}`}
         src={imageName}
       />
     </div>

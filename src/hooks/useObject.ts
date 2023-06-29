@@ -2,7 +2,7 @@ import { useState } from 'react';
 import useList from './useList';
 import useSweetAlert from './/useSweetAlert'
 
-import { addObject, deleteObject, getObjects, getSimplifiedObjects, toggleObjectKey, updateObject } from '../firebase/ObjController'
+import { addObject, deleteObject, getSimplifiedObjects, toggleObjectKey, updateObject } from '../firebase/ObjController'
 
 interface LastUsedBtnProps {
   value?: 'get' | 'add' | 'upd' | 'del' 

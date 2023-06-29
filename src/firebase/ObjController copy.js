@@ -80,7 +80,7 @@ export const getSimplifiedObjects = async (collect) => {
     const propiedades = doc.data();
 
     // Crear un nuevo objeto simplificado con las propiedades deseadas
-    const objetoSimplificado = { pos: (i + 1)};
+    const objetoSimplificado = { pos: (i + 1) };
     //const objId = { pos: (i + 1)}
     for (const propiedad in propiedades) {
       if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
@@ -91,8 +91,7 @@ export const getSimplifiedObjects = async (collect) => {
     // Agregar el objeto al array resultante
     arrayResultante.push(objetoSimplificado);
   }
-
-  return arrayResultante;
+  return arrayResultante
 }
 
 /**

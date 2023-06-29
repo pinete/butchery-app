@@ -1,7 +1,7 @@
 import FormObj from "./FormObj";
 
 type FamProps = {
-  idFam:string,
+  id:string,
   nombre:string,
   img?:string
 }

@@ -8,9 +8,8 @@ import MotionButton from '../01_atomos/MotionButton';
 
 
 const UploadImage = (ruta:string, setImageName:React.Dispatch<React.SetStateAction<string>>):JSX.Element => {
+  
   const [imageFile, setImageFile] = useState<File | null>(null);
-  //const [imageName, setImageName] = useState<string>('')
-
 
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -93,16 +93,22 @@ function GenericTailWindForm<T>(
     dark:placeholder:text-${buttonProps?.textColorHover}-300 
     ${buttonProps?.adjunctClass}
   `
-  const [formData, setFormData] = useState<FormData>({});
+  //const [formData, setFormData] = useState<FormData>({});
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => { 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index:number) => { 
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    //setFormData((prevData) => ({ ...prevData, [name]: value }));
+    formList.updateField(0,name,value)
+    // console.log('name en change ',name)
+    // console.log('value en change ',value)
+    // console.log('FormList en change ',formList)
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData as T);
+    //if (onSubmit) onSubmit(formData as T);
+    console.log('formList.value[0]: ',formList.value[0])
+    if (onSubmit) onSubmit(formList.value[0] as T);
   };
 
   const ShowField = (field:FieldForm, index:number):JSX.Element => {
@@ -119,7 +125,7 @@ function GenericTailWindForm<T>(
           cols={areaProps?.cols}
           placeholder = {areaProps?.placeHolder}
           className = {areaClass}
-          onChange={handleChange}
+          onChange={(e)=>handleChange(e, index)}
         /> 
       )
       case 'imageFile':{ 
@@ -136,9 +142,10 @@ function GenericTailWindForm<T>(
               value={imageName}
               placeholder={inputProps?.placeHolder}
               className ={inputClass}
-              onChange={handleChange}
+              onChange={(e)=>handleChange(e, index)}
             />
-            {DownloadImage ('image', formList ? formList.value[0][field.key] : '', '30%')}
+            {/* {formList.value[0][field.key] && DownloadImage ('image', formList ? formList.value[0][field.key] : '', '30%')} */}
+            {DownloadImage ('image/families', imageName ? imageName : '', '30%')}
             <span key ='ModalFormFam'>
                 {ModalComponent (
                   {
@@ -164,13 +171,14 @@ function GenericTailWindForm<T>(
           key={`input${index}`}
           type={field.type}
           id={`${field.key}${index}`}
-          name={`${field.key}${index}`}
+          name={`${field.key}`}
           readOnly={field.readOnly}
           //value={formList.value[0][fieldsToShow![index]] || ''}
           value={formList ? formList.value[0][field.key] : ''}
+          //value={formData[0]}
           placeholder={inputProps?.placeHolder}
           className ={inputClass}
-          onChange={handleChange}
+          onChange={(e)=>handleChange(e,index)}
         />
       )
     }
@@ -193,7 +201,7 @@ function GenericTailWindForm<T>(
               key={`label${index}`}
               htmlFor={`${field.key}${index}`}
               className={labelClass}
-            > {fieldsToShow ? fieldsToShow[index] : `label${index}`}
+            > {field.label}
             </label> */}
 
             {ShowField (field, index )}

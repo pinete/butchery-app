@@ -57,7 +57,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
       //TODO aviso de que tienen que estar rellenos
       return
     }
-    // TODO actualizo en DB
+    // Actualizo en DB
     const obj = newTask
     obj.modified = new Date()
     updateObject(obj, 'tasks')

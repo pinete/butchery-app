@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ExampleTable from './components/04_plantillas/tables/ExampleTable';
 //import UploadImage from './components/utils/UploadImage';
 //import DownloadImage from './components/utils/DownloadImage';
+import RenderFam from './components/02_moleculas/RenderFam';
 import GlobalProvider from './context/GlobalContext';
 
 
@@ -70,7 +71,7 @@ const App = ():JSX.Element => {
         
         <ExampleTable />
         {/* {UploadImage ("image")} */}
-        
+        <RenderFam />
         {/* Componente Settings envuelto en AnimatePresence que 
           permite continuar la animación cuando se desmonta el componente */}
           <AnimatePresence 

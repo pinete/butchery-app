@@ -6,6 +6,7 @@ type FieldForm = {
   label: string;
   type: string;
   readOnly?: boolean;
+  imageRoute?:string;
   isArea: boolean;
 };
 // interfaces para etiquetas de hipertexto con tailwind
