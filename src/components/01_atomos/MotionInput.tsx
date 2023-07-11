@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 
 const MotionInput = (
   {
-    //ref=(r:React.MutableRefObject<HTMLInputElement> | undefined)=>{},
     value='',
     placeholder = 'Introduzca texto',
     textColorHover='white',
@@ -18,7 +17,7 @@ const MotionInput = (
 ) => {
 
   return (
-    <div className="relative mb-3 m-1" 
+    <div className="relative mb-3 m-1 z-0" 
       data-te-input-wrapper-init 
       data-te-input-group-ref
     >
@@ -27,7 +26,7 @@ const MotionInput = (
         value={value}
         className=
           {`
-            inputTailWind 
+            inputTailWind
             bg-${bg} 
             hover:bg-${bgHover} 
             dark:bg-${bgDark} 

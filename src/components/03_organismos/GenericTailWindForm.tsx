@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import MotionButton from '../01_atomos/MotionButton';
-import UploadImage from '../utils/UploadImage';
-import DownloadImage from '../utils/DownloadImage';
+import UploadImage from '../../firebase/UploadImage';
+import DownloadImage from '../../firebase/DownloadImage';
 import ModalComponent from '../04_plantillas/dialog/ModalComponent';
+import useList from '../../hooks/useList';
+import { getSimplifiedObjects } from '../../firebase/ObjController';
 
 
 
 type FormProps<T> = {
   // Ver resto de tipos en types.d.ts
   //data?: T; // Objeto de la coleccion
-  //fieldsToShow?: string[]; //Campos a mostrar de la coleccion( deben coincidir con el nro de fields)
+  collectSelect?: string[]; // Array de colecciones necesarias para los select
   formList?: any;
   fields: FieldForm[]; // Cantidad y Tipo de inputs en el formulario
   buttonProps?: MotionButtonProps,
@@ -20,16 +22,12 @@ type FormProps<T> = {
   onClick?: () => void;
 };
 
-type FormData = {
-  [key: string]: string;
-};
-
 // Componente del formulario genérico
 function GenericTailWindForm<T>(
   { //data,
+    collectSelect=[''],
     formList,
     fields, 
-    //fieldsToShow,
     buttonProps,
     inputProps, 
     areaProps, 
@@ -38,28 +36,8 @@ function GenericTailWindForm<T>(
     onClick 
   }: FormProps<T>) {
 
-  // const labelClass =
-  // `
-  //   pointer-events-none 
-  //   absolute 
-  //   left-3 
-  //   top-0 
-  //   mb-0 
-  //   max-w-[90%] 
-  //   origin-[0_0] 
-  //   truncate pt-[0.37rem] 
-  //   leading-[1.6] 
-  //   text-neutral-500 
-  //   transition-all 
-  //   duration-200 
-  //   ease-out 
-  //   peer-focus:-translate-y-[0.9rem] 
-  //   peer-focus:scale-[0.8] 
-  //   peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] 
-  //   peer-data-[te-input-state-active]:scale-[0.8] 
-  //   motion-reduce:transition-none dark:text-neutral-200 
-  //   dark:peer-focus:text-primary
-  // `
+  let contSelect = -1 // Incrementaremos el contador para cada select (por si existe en formList)
+
   const inputClass = 
   `
     inputTailWind 
@@ -95,13 +73,9 @@ function GenericTailWindForm<T>(
   `
   //const [formData, setFormData] = useState<FormData>({});
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index:number) => { 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> , index:number) => { 
     const { name, value } = e.target;
-    //setFormData((prevData) => ({ ...prevData, [name]: value }));
-    formList.updateField(0,name,value)
-    // console.log('name en change ',name)
-    // console.log('value en change ',value)
-    // console.log('FormList en change ',formList)
+    formList.updateField(0, name, value)
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -111,24 +85,52 @@ function GenericTailWindForm<T>(
     if (onSubmit) onSubmit(formList.value[0] as T);
   };
 
+  const HandleSelect= (index:number, label:string):JSX.Element => {
+    contSelect ++;
+    const collect = collectSelect[contSelect]
+    const selectList = useList(async () => await getSimplifiedObjects(collect))
+    return (
+      <>
+        <select data-te-select-init key={`select${index}`} onChange={(e)=>handleChange(e, index)}>
+          {selectList.value.map((item, i) => { 
+            return (
+              <option
+                key={`option${index}-${i}`}
+                value={item.id}
+                placeholder = {areaProps?.placeHolder}
+                className = {inputClass}           
+              > 
+                {item.name}
+              </option> )
+          })} 
+        </select>
+        <label data-te-select-label-ref>{label}</label>
+      </>
+    ); 
+  }
+
+  
+
   const ShowField = (field:FieldForm, index:number):JSX.Element => {
     const [imageName, setImageName] = useState<string>(formList.value[0][field.key])
     switch (field.type) {
-      case 'textArea': return (
-        <textarea
-          key={`textArea${index}`}
-          id={`${field.key}${index}`}
-          name={`${field.key}${index}`}
-          //value={formList ? formList.value[0][field.key] : ''}
-          value={imageName}
-          rows={areaProps?.rows}
-          cols={areaProps?.cols}
-          placeholder = {areaProps?.placeHolder}
-          className = {areaClass}
-          onChange={(e)=>handleChange(e, index)}
-        /> 
-      )
-      case 'imageFile':{ 
+      case 'textArea': 
+        return (
+          <textarea
+            key={`textArea${index}`}
+            id={`${field.key}${index}`}
+            name={`${field.key}${index}`}
+            //value={formList ? formList.value[0][field.key] : ''}
+            value={imageName}
+            rows={areaProps?.rows}
+            cols={areaProps?.cols}
+            placeholder = {areaProps?.placeHolder}
+            className = {areaClass}
+            onChange={(e)=>handleChange(e, index)}
+          /> 
+        )
+      
+      case 'imageFile': 
         return (
           <div className='flex'>
             <input
@@ -147,25 +149,26 @@ function GenericTailWindForm<T>(
             {/* {formList.value[0][field.key] && DownloadImage ('image', formList ? formList.value[0][field.key] : '', '30%')} */}
             {DownloadImage ('image/families', imageName ? imageName : '', '30%')}
             <span key ='ModalFormFam'>
-                {ModalComponent (
-                  {
-                    title:'Imagen', 
-                    buttonProps:{
-                      textColorHover: 'white',
-                      bg: 'sky-400',
-                      bgHover: 'sky-600',
-                      bgDark: 'sky-600',
-                      bgHoverDark: 'sky-800',
-                      icon: 'Search'}, 
-                    children:UploadImage ('image', setImageName)
-                  }
-                )}
-              </span>
+              {ModalComponent (
+                {
+                  title:'Imagen', 
+                  buttonProps:{
+                    textColorHover: 'white',
+                    bg: 'sky-400',
+                    bgHover: 'sky-600',
+                    bgDark: 'sky-600',
+                    bgHoverDark: 'sky-800',
+                    icon: 'Search'}, 
+                  children:UploadImage ('image', setImageName)
+                }
+              )}
+            </span>
             
           </div>
         )
-      }
-
+      
+      case 'select': return HandleSelect (index, field.label)
+      
       default: return (
         <input
           key={`input${index}`}
@@ -185,7 +188,7 @@ function GenericTailWindForm<T>(
   }
   
   return (
-    <form onSubmit={handleSubmit} className={classForm}>
+    <form onSubmit={handleSubmit} className={classForm} autoComplete="off">
       {fields.map((field, index) =>{ 
         
         return (

@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { ref, uploadBytes} from "firebase/storage";
-import { storage } from '../../firebase/index'
+import { storage } from './index'
 import 'firebase/storage';
 //import DownloadImage from './DownloadImage';
-import MotionButton from '../01_atomos/MotionButton';
+import MotionButton from '../components/01_atomos/MotionButton';
 
 
 

@@ -3,7 +3,7 @@ import { getSimplifiedObjects } from "./ObjController"
 import { ObjListener } from "./ObjListener"
 
 // export type ObjProps<T> = {
-//   data: T[];
+//    data: T[];
 // }
 /**
  * Devuelve un useState array con los objetos de la coleccion firebase dada.
@@ -28,7 +28,7 @@ const ObjState = (collect:string, id?:string) => {
   React.useEffect(() => {
     capturaObjeto(setObj)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isChanged])
+  }, [isChanged, collect])
 
   return {obj, setObj}
 }

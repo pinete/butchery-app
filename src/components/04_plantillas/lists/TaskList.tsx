@@ -7,9 +7,11 @@ import MotionTextArea from '../../01_atomos/MotionTextArea'
 import MotionInput from '../../01_atomos/MotionInput'
 import { addObject, deleteObject, getObjects, toggleObjectKey, updateObject } from '../../../firebase/ObjController'
 import ModalComponent from '../dialog/ModalComponent';
-import TableFam from '../tables/TableFam';
+//import TableFam from '../tables/TableFam';
+import TableCollect from '../tables/TableCollect';
 import FormFam from '../forms/FormFam';
 import { GlobalContext } from '../../../context/GlobalContext';
+
 
 
 interface linTaskProps {
@@ -178,7 +180,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
 
   return (
     <>
-      <header className='flex justify-between max-h-full'>
+      <header className='flex justify-between max-h-full z-0 mt-28'>
         <h1 className='mt-2 text-3xl text-sky-700 font-semibold dark:text-sky-300'>
           Encargos
         </h1>
@@ -189,7 +191,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
           onclick={toggleSettings}
         />
       </header>
-      <div className='justify-between max-h-full'>
+      <div className='justify-between max-h-full z-0'>
         <div className='my-4'>
           <div className='flex items-center'>
             <MotionInput key='inputArticle'
@@ -219,7 +221,8 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     bgDark: 'sky-600',
                     bgHoverDark: 'sky-800',
                     icon: 'Search'}, 
-                  children:<TableFam />
+                  //children:<TableFam />
+                  children:<TableCollect collect='subfamilies' fieldsToShow={['nombre']}/>
                 }
               )}
             </span>

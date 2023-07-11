@@ -9,8 +9,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import RenderFam from './components/02_moleculas/RenderFam';
 import GlobalProvider from './context/GlobalContext';
 
-
-
 interface configProps {
   theme: string, 
   lang: string
@@ -66,8 +64,6 @@ const App = ():JSX.Element => {
            dark:text-gray-50
         `}> {/* Control de modo oscuro. Si 'dark' entonces bg-slate-800  y text-gray-50*/}
         <TaskList showSettings={showSettings} setShowSettings={setShowSettings}/>
-        
-        {/* <ExampleTable /> */}
         {/* {UploadImage ("image")} */}
         <RenderFam />
         {/* Componente Settings envuelto en AnimatePresence que permite continuar la animación cuando se desmonta el componente */}

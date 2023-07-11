@@ -15,8 +15,8 @@ const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   );
 };
 export default GlobalProvider
-/* 
-Para usar GlobalContext
+
+/* ******************* Para usar GlobalContext en un componente ***********************
 import React, { useContext } from 'react';
 import { GlobalContext } from './GlobalContext';
 

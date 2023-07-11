@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import AppRoutes from './routes/AppRoutes'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { onServiceWorkerUpdate } from '@3m1/service-worker-updater'
 
@@ -9,15 +10,22 @@ import { onServiceWorkerUpdate } from '@3m1/service-worker-updater'
 import { ThemeProvider } from "@material-tailwind/react";
 
 import reportWebVitals from './reportWebVitals';
+import BtnMenuPrinc from './components/03_organismos/BtnMenuPrinc';
+import Header from './components/03_organismos/Header';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    
+      <ThemeProvider>
+
+          <AppRoutes />
+
+      </ThemeProvider>
+    
   </React.StrictMode>
 );
 

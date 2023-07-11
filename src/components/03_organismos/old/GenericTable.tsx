@@ -2,10 +2,12 @@ import React from 'react'
 
 export type TableProps<T> = {
   data: T[];
-  btnAction:(row:T, clickedBtn: 'Del' | 'Upd' | 'New') => void;
+  btnClick?:'Del' | 'Upd' | 'New' | '';
+  setBtnClick?:React.Dispatch<React.SetStateAction<'Del' | 'Upd' | 'New' | ''>>;
   fieldsToShow?: string[];
-  renderHeadButtons?: () => JSX.Element |undefined;
-  renderLineButtons?:(row:T)=> React.ReactNode;
+  renderHeadButtons?: (action?: ()=>void) => React.ReactNode;
+  //renderLineButtons?: (item: T) => React.ReactNode;
+  renderLineButtons?: (action?: ()=>void) => React.ReactNode;
 }
 
 const valueField = (field:any)=>{
@@ -23,8 +25,45 @@ const valueField = (field:any)=>{
  * @param  renderButtons - Botones React.ReactNode
  * @returns Tabla JSX.Element
  */
-// const GenericTable = < T extends Record<string, any>>({data, btnClick, setBtnClick, fieldsToShow, renderHeadButtons, renderLineButtons}:TableProps<T>)=>{
-  const GenericTable = < T extends Record<string, any>>({data, fieldsToShow, renderHeadButtons, renderLineButtons}:TableProps<T>)=>{
+const GenericTable = < T extends Record<string, any>>({data, btnClick, setBtnClick, fieldsToShow, renderHeadButtons, renderLineButtons}:TableProps<T>)=>{
+
+  //type DataType = typeof data
+  //type DataItemType = typeof data[0];
+
+  const updAction = (row:T) => {
+    alert(`Has hecho onClick sobre el boton 'Upd' de la linea ${row.pos} de id ${row.id} y nombre ${row.nombre} y el boton es ${btnClick}`)
+  }
+  const delAction = (row:T) => {
+    alert(`Has hecho onClick sobre el boton 'Del' de la linea ${row.pos} de id ${row.id} y nombre ${row.nombre} y el boton es ${btnClick}`)
+  }
+  const newAction = () => {
+    alert(`Has hecho onClick sobre el boton 'New' y el boton es ${btnClick}`)
+  }
+  
+
+  const btnAction = (row:T) => {
+    switch (btnClick) {
+      case 'Upd':
+        console.log('Ha entrado en btnAction UPD de GenericTable')
+        updAction(row);
+        //alert(`btnClick ha cambiado a ${btnClick}` )
+        break
+      case 'Del':
+        console.log('Ha entrado en btnAction DEL de GenericTable')
+        delAction(row);
+        //alert(`btnClick ha cambiado a ${btnClick}` )
+        break
+      case 'New':
+        console.log('Ha entrado en btnAction NEW de GenericTable')
+        newAction();
+        //alert(`btnClick ha cambiado a ${btnClick}` )
+        break
+      default:  
+        alert(`Acción de boton no contemplada: Valor de btnClick=${btnClick}`)
+        //setBtnClick('')
+    } 
+  }
+
   // Si no especificamos campos a mostrar, pinta todos  
   let tableHeaders:string[]
   if (fieldsToShow === undefined) tableHeaders = Object.keys(data[0] || {}); 
@@ -57,7 +96,7 @@ const valueField = (field:any)=>{
                           key = {`buttonHeader`} 
                           className="px-6 py-4"
                         > 
-                          {renderHeadButtons()}
+                          {renderHeadButtons(()=>btnAction(data[0]))}
                         </span>
                         )
                       } 
@@ -96,7 +135,7 @@ const valueField = (field:any)=>{
                           : 'border-b bg-white dark:border-neutral-500 dark:bg-neutral-600'
                         }
                       >
-                        {renderLineButtons && renderLineButtons(row)}
+                        {renderLineButtons && renderLineButtons(()=>btnAction(row))}
                       </td>
                     </tr>
                   

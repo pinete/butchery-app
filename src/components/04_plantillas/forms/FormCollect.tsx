@@ -1,3 +1,4 @@
+import { objFieldForm } from "./objFieldsForm";
 import FormObj from "./FormObj";
 
 type FamProps = {
@@ -22,18 +23,14 @@ type FamProps = {
 
 
 
-const fields: FieldForm[] = [
-  { key: 'nombre', type: 'text', label:'Nombre' },// nombre
-  { key: 'img', type: 'imageFile', label:'Imagen', readOnly: true },// imagen
-];
-
-const FormFam = (id:string, obj?:FamProps) => {
-  
+const FormCollect = (collect:string, id:string, obj?:FamProps) => {
+  // Obtengo la estructura del formulario según la coleccion
+  const fields: FieldForm[] = objFieldForm(collect)
   return (
     <>
       {FormObj(
         id, 
-        'families', 
+        collect, 
         fields, 
         'Guardar' 
       )}
@@ -43,4 +40,4 @@ const FormFam = (id:string, obj?:FamProps) => {
   )
 }
 
-export default FormFam
+export default FormCollect

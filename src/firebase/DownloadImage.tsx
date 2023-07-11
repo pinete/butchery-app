@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ref, getDownloadURL} from "firebase/storage";
-import { storage } from '../../firebase/index'
+import { storage } from './index'
 import 'firebase/storage';
 
 

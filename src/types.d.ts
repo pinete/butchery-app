@@ -7,7 +7,7 @@ type FieldForm = {
   type: string;
   readOnly?: boolean;
   imageRoute?:string;
-  isArea: boolean;
+  options?:objectData[]; // Array con opciones para el select (en su caso)
 };
 // interfaces para etiquetas de hipertexto con tailwind
 interface MotionButtonProps {

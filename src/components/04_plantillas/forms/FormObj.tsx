@@ -22,7 +22,7 @@ const FormObj = (
     bgHoverDark:'sky-800',
     adjunctClass:'',
     // onsubmit?: (data:T)=>void
-    //onclick:()=>{}
+    // onclick:()=>{}
   }
 
   const inputProps:MotionInputProps = { 
@@ -57,7 +57,6 @@ const FormObj = (
   }
 
   return (
-
             <GenericTailWindForm 
               // data={obj} 
               formList={formList}

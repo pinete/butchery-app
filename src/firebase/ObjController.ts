@@ -7,7 +7,10 @@ import {
   deleteDoc,
   getDoc,
   QueryDocumentSnapshot,
-  QuerySnapshot,
+  QuerySnapshot, 
+  query, 
+  where,
+  Query
 } from 'firebase/firestore';
 import { db } from './index';
 
@@ -42,7 +45,6 @@ export const getObjects = async (collect: string): Promise<ObjectData[]> => {
 export const getSimplifiedObjectById = async (collect: string, id: string): Promise<ObjectData[]> => {
   const arrayResultante: ObjectData[] = [];
   const objetoSimplificado: ObjectData = {};
-
   const docRef = doc(db, collect, id);
   const docSnap = await getDoc(docRef);
   const propiedades = docSnap.data();
@@ -85,7 +87,43 @@ export const getSimplifiedObjects = async (collect: string): Promise<ObjectData[
 
     arrayResultante.push(objetoSimplificado);
   }
+  return arrayResultante;
+};
 
+/**
+ * Función para devolver querySnapshot como un array de objetos simplificado donde un item es igual al valor dado
+ * @param {string} collect Colección a leer
+ * @param {string} field1 Nombre del campo por el que seleccionar
+ * @param {string} value1 Valor que ha de coincidir en el campo
+ * @returns Object
+ */
+export const getSimplifiedObjectsWhere = async (collect: string, field1:string, value1:any, field2?:string, value2?:any): Promise<ObjectData[]> => {
+  const arrayResultante: ObjectData[] = [];
+  
+  const collectRef = collection(db, collect);
+  // Creamos la consulta
+  let q:Query
+  if (field2) q = query(collectRef, where(field1, "==", value1), where(field2, "==", value2));
+  else q = query(collectRef, where(field1, "==", value1))
+  // Ejecutamos la consulta
+  const querySnapshot = await getDocs(q);
+  const documentos = querySnapshot.docs;
+  console.log('Documentos en getSimplifiedObjectsWhere', documentos)
+  // Simplificamos el objeto resultante
+  for (let i = 0; i < documentos.length; i++) {
+    const doc = documentos[i];
+    const propiedades = doc.data();
+    const objetoSimplificado: ObjectData = { pos: i + 1 };
+
+    for (const propiedad in propiedades) {
+      if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {
+        objetoSimplificado[propiedad] = propiedades[propiedad];
+      }
+    }
+    
+    arrayResultante.push(objetoSimplificado);
+    console.log('arrayResultante en getSimplifiedObjectsWhere', arrayResultante)
+  }
   return arrayResultante;
 };
 
