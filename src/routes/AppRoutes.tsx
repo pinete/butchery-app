@@ -104,7 +104,7 @@ function AppRoutes() {
  
   return (
     <GlobalProvider>
-      <div>
+      
          <BrowserRouter> 
             <Header user={user} onLogout={()=>{alert('Ha pulsado LogOut')}} AnimateSettings={AnimateSettings}/>
             {/* Route Switch */}
@@ -123,11 +123,9 @@ function AppRoutes() {
                 
                 {/* NotFound Route */}          
                 <Route path = '*' element = {<NotFoundPage404/>}/>
-              
             </Routes>
-
         </BrowserRouter>
-      </div>
+ 
     </GlobalProvider>
   );
 }

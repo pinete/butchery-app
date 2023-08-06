@@ -1,50 +1,45 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { ref, uploadBytes} from "firebase/storage";
 import { storage } from './index'
-import 'firebase/storage';
-//import DownloadImage from './DownloadImage';
 import MotionButton from '../components/01_atomos/MotionButton';
 
+type PropsType = {
+  ruta: string;
+  setImageName: React.Dispatch<React.SetStateAction<string>>;
+};
 
-
-const UploadImage = (ruta:string, setImageName:React.Dispatch<React.SetStateAction<string>>):JSX.Element => {
-  
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
+const UploadImage = ({ ruta, setImageName }: PropsType): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-      console.log('html input file es: ',e)
+      setImageName(e.target.files[0].name);
     }
   }; 
 
   const handleUpload = () => {
 
-    if (imageFile && inputRef.current?.files) {
+    if (inputRef.current?.files) {
       const selectedFile = inputRef.current.files[0];
-      console.log('Fichero seleccionado: ', selectedFile);
-      const storageRef = ref(storage, `image/${imageFile.name}`);
-      console.log(imageFile)
-          setImageName(selectedFile.name)
-          console.log(selectedFile)
-      uploadBytes (storageRef, selectedFile)     
-        .then(() => {
-          console.log("Imagen subida con éxito");
-
-        })
-        .catch((error:any) => {
-          console.error("Error al subir la imagen:", error);
-        }
-      );
+      const storageRef = ref(storage, `${ruta}/${selectedFile.name}`);
+      try {
+        uploadBytes(storageRef, selectedFile);
+        console.log('Imagen subida con éxito');
+      } catch (error) {
+        console.error('Error al subir la imagen:', error);
+      }
     }
   };
 
   return (
     <div className='flex align-middle justify-items-center'>
-      <input type="file" ref={inputRef} accept={`${ruta}/*`} onChange={handleImageChange} />
-      <div >
+      <input 
+        type="file" 
+        ref={inputRef} 
+        accept={`${ruta}/*`} 
+        onChange={handleImageChange} 
+      />
+      {/* <div > */}
         <MotionButton 
                 textColorHover='white'
                 bg='sky-400'
@@ -55,7 +50,7 @@ const UploadImage = (ruta:string, setImageName:React.Dispatch<React.SetStateActi
                 onclick={handleUpload}
                 />
         {/* { DownloadImage (ruta, imageName) }  */}
-      </div>
+      {/* </div> */}
     </div>
   );
 };

@@ -6,6 +6,7 @@ export interface UseListMethods {
     get: (index: number) => any;
     push: (element: any) => void;
     remove: (index: number) => void;
+    removeField:(index: number, field: string) => void;
     updateField: (index: number, field: string, newFieldValue: any) => void;
     updateItem: (index: number, newItem: any) => void;
     clear: () => void;
@@ -18,13 +19,14 @@ interface ObjectData {
   }
 
 /**
- * Hook personalizado para manejo de listas
- * @param {function} getObject -> procedimiento get de firestore para capturar datos iniciales
+ * Hook personalizado para manejo de listas capturadas de una coleccion de firebase 
+ * @param {function} getObject:() => Promise -> procedimiento get de firestore para capturar datos iniciales
  * @returns {any} value, setValue, push, remove, isEmpty, clear, sort, reverse
  */
-const useList = (getObject:() =>Promise<ObjectData[]>): UseListMethods => {
+const useList = (getObject:() => Promise<ObjectData[]>): UseListMethods => {
 
     const [value, setValue] = useState<any[]>([]);
+
     useEffect(() => { 
         getObject()
             .then((response) => {
@@ -62,6 +64,12 @@ const useList = (getObject:() =>Promise<ObjectData[]>): UseListMethods => {
         setValue((oldValue) => oldValue.filter((_, i) => i !== index));
     };
 
+    const removeField = (index:number, field:string) => {
+        let newList = value
+        delete newList[index][field]
+        setValue([...newList])
+    }
+
     /**
      * Actualiza con el valor dado el campo de la lista indicado en la posicion dada 
      * @param {number} index Posición en la lista
@@ -96,7 +104,7 @@ const useList = (getObject:() =>Promise<ObjectData[]>): UseListMethods => {
      * Devuelve true si la lista está vacía, en caso contrario devuelve false.
      * @returns {boolean}
      */
-    const isEmpty = () => value.length === 0;
+    const isEmpty = (): boolean => value.length === 0;
 
     /**
      * Ordena alfableticamente la lista
@@ -120,8 +128,10 @@ const useList = (getObject:() =>Promise<ObjectData[]>): UseListMethods => {
         setValue([...value.reverse()]);
     };
 
+    
+
     return {
-            value, setValue, get, push, remove, updateField, updateItem, clear, sort, reverse, isEmpty,
+            value, setValue, get, push, remove, removeField, updateField, updateItem,  clear, sort, reverse, isEmpty,
         };
 };
 

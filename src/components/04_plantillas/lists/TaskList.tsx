@@ -9,7 +9,7 @@ import { addObject, deleteObject, getObjects, toggleObjectKey, updateObject } fr
 import ModalComponent from '../dialog/ModalComponent';
 //import TableFam from '../tables/TableFam';
 import TableCollect from '../tables/TableCollect';
-import FormFam from '../forms/FormFam';
+//import FormFam from '../forms/FormFam';
 import { GlobalContext } from '../../../context/GlobalContext';
 
 
@@ -209,8 +209,8 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
               }
               placeholder={'¿Que quieres comprar?'}
             />
-            <span key='ModalTableFam'>
-              {/* Modal de tabla de familias */}
+            {/* <span key='ModalTableFam'>
+              // Modal de tabla de familias 
               {ModalComponent (
                 {
                   title:'Familias', 
@@ -220,15 +220,15 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                     bgHover: 'sky-600',
                     bgDark: 'sky-600',
                     bgHoverDark: 'sky-800',
-                    icon: 'Search'}, 
-                  //children:<TableFam />
+                    icon: 'Search'
+                  }, 
                   children:<TableCollect collect='subfamilies' fieldsToShow={['nombre']}/>
                 }
               )}
-            </span>
-            <span key ='ModalFormFam'>
+            </span> */}
+            {/* <span key ='ModalFormFam'>
               {/* Modal de Formulario de familias */}
-              {ModalComponent (
+              {/* {ModalComponent (
                 {
                   title:'Familias', 
                   buttonProps:{
@@ -241,7 +241,7 @@ const TaskList = ({ showSettings, setShowSettings }:any):JSX.Element => {
                   children:FormFam ('p3z4Qar9MD8EWJTcW3Yn')
                 }
               )}
-            </span>
+            </span> */}
           </div>
           <MotionInput key='inputQuantity'
             bg={'sky-100'}

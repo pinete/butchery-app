@@ -1,5 +1,3 @@
-//import React from 'react'
-
 import { motion } from 'framer-motion'
 import { 
   BsTrash as Trash, 
@@ -39,11 +37,11 @@ const MotionButton = (
     adjunctClass='',
     icon='',
     //onsubmit = (data:T)=>{},
-    onclick = ():JSX.Element | void => {}
+    onclick = ():JSX.Element | void  => {}
     //onclick = ():React.MouseEventHandler<HTMLButtonElement> | void => {}
   }:MotionButtonProps
 ) => {
-  // const btnTailWind = `shadow py-1 px-2 m-1 rounded hover:text-${textColorHover} transition-all duration-200 bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`
+  
 
   const showIcon = () => {
     switch (icon) {

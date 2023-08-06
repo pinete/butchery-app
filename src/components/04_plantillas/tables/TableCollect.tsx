@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import {SiAddthis as AddIcon} from 'react-icons/si'
 import ObjState from "../../../firebase/ObjState";
 import GenericTable from "../../03_organismos/GenericTable";
+import { deleteObject } from "../../../firebase/ObjController";
+import FormCollect from "../forms/FormCollect";
 
 type TableCollectProps = {
-  collect: string;
+  collect: string; 
   fieldsToShow?: string[];
   children?: React.ReactNode; // Prop para el contenido interno
 };
@@ -17,20 +19,32 @@ type TableCollectProps = {
  */
 const TableCollect = ({collect, fieldsToShow}: TableCollectProps):JSX.Element => {
 
+  console.log('ha entrado en TableCollect')
   // Obtenemos el objeto de la coleccion
   const {obj} = ObjState(collect)
   // Obtenemos el tipo de los items del array obj
+  //setObj(generateObjectType(obj))
   type ItemType = typeof obj[0];
- 
-  /*************************** MANEJO DE BOTONES *************************** */
+
+  // Estado para controlar si se debe mostrar el formulario
+  const [showForm, setShowForm] = useState(false);
+  // Estado para almacenar los datos del formulario
+  const [formRow, setFormRow] = useState({});
+
+  /*------------------------ ACCIONES EN BOTONES ------------------------- */
   const updAction = (row:ItemType) => {
-    alert(`Has hecho onClick sobre el boton 'Upd' de la linea ${Object.values(row)[0]} y el boton es 'Upd'`)
+    setFormRow(row);
+    setShowForm(true);
   }
   const delAction = (row:ItemType) => {
-    alert(`Has hecho onClick sobre el boton 'Del' de la linea ${Object.values(row)[0]} y el boton es 'Del'`)
+    setShowForm(false);
+    alert(`Has hecho onClick sobre el boton 'Del' de la linea ${Object.values(row)[0]}`)
+    deleteObject(row, collect)
   }
   const newAction = () => {
-    alert(`Has hecho onClick sobre el boton 'New' y el boton es 'New'`)
+    alert(`Has hecho onClick sobre el boton 'New'`)
+    setFormRow({})
+    setShowForm(true)
   }
   
   // Escojemos la acción a realizar en función del botón activado
@@ -54,7 +68,7 @@ const TableCollect = ({collect, fieldsToShow}: TableCollectProps):JSX.Element =>
         alert(`Acción de boton no contemplada: Valor de btnClick=${btnClick}`)
     } 
   }
-  /************************* FIN MANEJO DE BOTONES**************************** */
+  /*-------------------------- FIN ACCIONES EN BOTONES -------------------------- */
 
   // Definimos el boton pulsado y enviamos a seleccionar la acción que realiza el boton Borrar
   const handleButtonDeleteClick = (row:ItemType) => {
@@ -103,16 +117,17 @@ const TableCollect = ({collect, fieldsToShow}: TableCollectProps):JSX.Element =>
       <button
         title='Actualizar linea'
         className="bg-gray-300 hover:bg-sky-400 text-sky-800 font-bold py-2 px-4 rounded-r" 
-        onClick={()=>handleButtonUpdateClick(btnAction)}
+        onClick={()=>handleButtonUpdateClick(row)}
       >
         Upd
       </button>
+      <FormCollect modal={true} collect={collect} row={row} textSubmitButton="Guardar"/> 
     </div>
     )
   };
 
   return (
-    <div className="mt-28">
+    <div className="mt-28 max-h-screen">
       <GenericTable 
         data = {obj} 
         btnAction = {btnAction}
@@ -120,6 +135,9 @@ const TableCollect = ({collect, fieldsToShow}: TableCollectProps):JSX.Element =>
         renderHeadButtons = {renderHeadButtons}
         renderLineButtons = {renderLineButtons}
       />
+      {showForm && (
+        <FormCollect modal={true} collect={collect} row={formRow} textSubmitButton="Guardar"/>
+      )}
     </div>
   )
 }

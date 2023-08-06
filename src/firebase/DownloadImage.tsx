@@ -1,45 +1,49 @@
-import { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ref, getDownloadURL} from "firebase/storage";
 import { storage } from './index'
-import 'firebase/storage';
 
+type PropsType = {
+  ruta:string 
+  storageImgName:string 
+  imgWidth?:string
+  imgHeight?:string
+}
 
-const DownloadImage = (
-  ruta:string, 
-  storageImgName:string, 
-  //image:string, 
-  //setImage:React.Dispatch<React.SetStateAction<string>>, 
+const DownloadImage =  ({
+  ruta, 
+  storageImgName, 
   imgWidth = '5%',
   imgHeight='5%'
-):JSX.Element => {
+}:PropsType):JSX.Element => {
 
-  const [imageName, setImageName] = useState<string>('');
+  console.log('ha entrado en DownloadImage')
+  const imgRef = useRef<HTMLImageElement>(null);
 
-  const storageRef = ref(storage, `${ruta}/${storageImgName}`);
-  console.log ('storage: ', storage)
-  
+  useEffect(() => {
+    if (storageImgName) {  
+      const storageRef = ref(storage, `${ruta}/${storageImgName}`);
+      getDownloadURL(storageRef)
+      .then((url) => {
+        imgRef.current?.setAttribute('src', url);
+        //console.log(url)
+      })
+      .catch ((error) => {
+        console.log(error);
+      });
+    }  
+  }, [ruta, storageImgName]);
 
-  if (storageImgName ) {
-    // Obtener URL de descarga del archivo
-    getDownloadURL(storageRef)
-    .then((url) => {
-      setImageName(url);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  console.log('Imagen: ',imageName)
   return (
-    <div className='object-scale-down inline-grid' style={{width:imgWidth, height:imgHeight}}>
-      <img 
-        key= {`img ${storageImgName}`} 
-        
-        alt={`Imagen a mostrar: ${storageImgName}`}
-        src={imageName}
-      />
+    <div className='flex justify-center'>
+      <div className='object-scale-down inline-grid ' style={{width:imgWidth, height:imgHeight}}>
+        <img
+          ref={imgRef}
+          key = {`img ${storageImgName}`} 
+          alt = {storageImgName}
+        />
+      </div>
     </div>
   );
-};
+}
 
 export default DownloadImage;

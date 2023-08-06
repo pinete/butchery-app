@@ -4,7 +4,7 @@ import useSweetAlert from './/useSweetAlert'
 
 import { addObject, deleteObject, getSimplifiedObjects, toggleObjectKey, updateObject } from '../firebase/ObjController'
 
-interface LastUsedBtnProps {
+interface LastBtnUsedProps {
   value?: 'get' | 'add' | 'upd' | 'del' 
 }
 
@@ -15,13 +15,16 @@ interface LastUsedBtnProps {
  * @returns lastAction, setLastAction, objList, updObj, addNewObject, delObj, toggleField
  */
 const useObject = (collect:string, obj:object) => {
-  const [lastAction,setLastAction] = useState<LastUsedBtnProps>()
+  const [lastAction,setLastAction] = useState<LastBtnUsedProps>()
   const [newObj, setNewObj] = useState<typeof obj>(obj);
   const objList = useList(() => getSimplifiedObjects(collect))
   //const [newIndex, setNewIndex] = useState<number>(-1)
   
   const alert = useSweetAlert()
-  
+  /**
+   * 
+   * @param index 
+   */
   const updObj=(index:number)=>{
     setLastAction({value:'upd'}) 
     const item = objList.get(index)

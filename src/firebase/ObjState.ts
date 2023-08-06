@@ -2,9 +2,6 @@ import React from 'react';
 import { getSimplifiedObjects } from "./ObjController"
 import { ObjListener } from "./ObjListener"
 
-// export type ObjProps<T> = {
-//    data: T[];
-// }
 /**
  * Devuelve un useState array con los objetos de la coleccion firebase dada.
  * El array se actualiza con cada cambio en la coleccion de firebase 
