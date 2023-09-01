@@ -2,7 +2,7 @@ import React from 'react'
 
 export type TableProps<T> = {
   data: T[];
-  btnAction:(row:T, clickedBtn: 'Del' | 'Upd' | 'New') => void;
+  //btnAction:(row:T, clickedBtn: 'Del' | 'Upd' | 'New') => void;
   fieldsToShow?: string[];
   renderHeadButtons?: () => JSX.Element |undefined;
   renderLineButtons?:(row:T)=> React.ReactNode;
@@ -47,7 +47,7 @@ const GenericTable = < T extends Record<string, any>>({data, fieldsToShow, rende
                     <th
                       key = {index} 
                       scope="col" 
-                      className="px-6 py-4"
+                      className="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900"
                     >
                       {header}
                     </th>

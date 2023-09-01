@@ -12,13 +12,18 @@ interface ObjectData {
 }
 
 type FormProps = {
+  modal: boolean;
+  openForm:boolean,
+  setOpenForm:React.Dispatch<React.SetStateAction<boolean>>
+  btnModalIcon: string,
+  withOpenBtn: boolean,
   formItem: ObjectData;
   setFormItem: React.Dispatch<React.SetStateAction<{}>>,
   collect: string;
-  modal: boolean;
   title: string | undefined;
   fields: FieldForm[]; // Cantidad y Tipo de inputs en el formulario
   classForm?: string,
+  
   textSubmitButton:string, 
   onSubmit?: (row: {}) => void;
   onClick?: (row: {}) => void;
@@ -31,10 +36,15 @@ type ShowFieldType = {
 let image = ''
 
 const GenericFormFormik = (
-  { formItem,
+ 
+  { modal,
+    openForm,
+    setOpenForm,
+    btnModalIcon = 'Pencil',
+    withOpenBtn,
+    formItem,
     setFormItem,
     collect,
-    modal = false,
     title = 'Titulo',
     fields, 
     classForm = '', 
@@ -43,10 +53,11 @@ const GenericFormFormik = (
     onClick 
   }: FormProps) => {
   
-  console.log('Ha entrado en GenericForm')
+  console.log('Ha entrado en GenericFormFormik con formItem = ', formItem)
 
-  if ('img' in formItem) image = formItem.img
+  if ('img' in formItem) image = JSON.parse(JSON.stringify(formItem.img))
   const [imageName, setImageName] = useState<string>(image)
+  const [openImage, setOpenImage] = useState<boolean>(false)
   
   useEffect(() => {
     if ('img' in formItem) {
@@ -83,7 +94,8 @@ const GenericFormFormik = (
                 textSelect !== '' && (
                   <option
                     key={`option${field.key}-${index}-${i}`}
-                    className = {inputClass}           
+                    className = {inputClass}
+                    value={id}           
                   > 
                     {textSelect}
                   </option> 
@@ -99,6 +111,15 @@ const GenericFormFormik = (
   // Seleccion de tipo de campo a mostrar en el formulario
   const ShowField = ({field, index}:ShowFieldType) => {
     switch (field.type) {
+      case 'hidden' :
+        return (
+          <Field as='hidden'
+            key={`${field.key}${index}`}
+            id={`${field.key}${index}`}
+            name={field.key}
+            className = {`${inputClass} ml-2`}
+          /> 
+        )
       case 'textArea': 
         return (
           <Field as='textarea'
@@ -117,6 +138,7 @@ const GenericFormFormik = (
               type='hidden'
               id={`${field.key}${index}`}
               name={field.key}
+              value={imageName}
               readOnly={field.readOnly}
               className = {`${inputClass} ml-2`}
 
@@ -128,14 +150,20 @@ const GenericFormFormik = (
               />
             }
             {<ModalComponent
+
+              openForm = {openImage}
+              setOpenForm = {()=>setOpenImage(!openImage)}
               title='Imagen'
-              buttonProps={{
-                textColorHover: 'white',
-                bg: 'sky-400',
-                bgHover: 'sky-600',
-                bgDark: 'sky-600',
-                bgHoverDark: 'sky-800',
-                icon: 'Search'}}
+              buttonProps={
+                {
+                  textColorHover: 'white',
+                  bg: 'sky-400',
+                  bgHover: 'sky-600',
+                  bgDark: 'sky-600',
+                  bgHoverDark: 'sky-800',
+                  icon: 'Search'
+                }
+              }
               children={<UploadImage ruta={`image/${collect}`} setImageName={setImageName}/>}
             />}
           </div>
@@ -162,6 +190,7 @@ const GenericFormFormik = (
       className={classForm} 
       autoComplete="off"
     >
+
       {fields.map((field, index) =>{ 
         return (
           <div key={`divGTWF${index}`} className='flex mt-2'>
@@ -180,30 +209,34 @@ const GenericFormFormik = (
   )
 
   return (
-    <Formik
-      initialValues={formItem}
-      onSubmit={values => {
-        if (onSubmit) onSubmit(values)
-      }}
-    >
-      {modal ?  
-        <ModalComponent 
-              title={title} 
-              buttonProps= {{
-                textColorHover: 'white',
-                bg: 'sky-400',
-                bgHover: 'sky-600',
-                bgDark: 'sky-600',
-                bgHoverDark: 'sky-800',
-                icon: 'Pencil'
-              }}
-              modalOpen={false}
-              children={showForm}
-      />
-      : 
-        showForm      
-      }
-    </Formik>
+      <Formik
+        initialValues={formItem}
+        onSubmit={values => {
+          if (onSubmit) onSubmit(values)
+        }}
+      >
+        {modal ?
+          <ModalComponent 
+            openForm = {openForm}
+            setOpenForm = {setOpenForm}
+            title={title} 
+            withOpenBtn={withOpenBtn}
+            buttonProps= {{
+              textColorHover: 'white',
+              bg: 'sky-400',
+              bgHover: 'sky-600',
+              bgDark: 'sky-600',
+              bgHoverDark: 'sky-800',
+              icon: `${btnModalIcon}`
+            }}
+            modalOpen={true}
+            children={showForm}
+          />
+        : showForm }
+          
+
+      </Formik>
+
   );
 };
 

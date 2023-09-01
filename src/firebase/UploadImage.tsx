@@ -39,18 +39,15 @@ const UploadImage = ({ ruta, setImageName }: PropsType): JSX.Element => {
         accept={`${ruta}/*`} 
         onChange={handleImageChange} 
       />
-      {/* <div > */}
-        <MotionButton 
-                textColorHover='white'
-                bg='sky-400'
-                bgHover='sky-600'
-                bgDark='sky-600'
-                bgHoverDark='sky-800'
-                textButton='Guardar' 
-                onclick={handleUpload}
-                />
-        {/* { DownloadImage (ruta, imageName) }  */}
-      {/* </div> */}
+      <MotionButton 
+        textColorHover='white'
+        bg='sky-400'
+        bgHover='sky-600'
+        bgDark='sky-600'
+        bgHoverDark='sky-800'
+        textButton='Guardar' 
+        onclick={handleUpload}
+      />
     </div>
   );
 };

@@ -80,13 +80,12 @@ const BtnMenuPrinc: React.FC  = ({ showSettings, setShowSettings }:any) => {
                 <ul className="py-2">
                   <li className="px-4 py-2 bg-gray-100 hover:bg-gray-300 ml-6" onClick={()=>handleOptionClick('/maintenance/families')}>Familias</li>
                   <li className="px-4 py-2  bg-gray-100 hover:bg-gray-300 ml-6" onClick={()=>handleOptionClick('/maintenance/subfamilies')}>Subfamilias</li>
+                  <li className="px-4 py-2  bg-gray-100 hover:bg-gray-300 ml-6" onClick={()=>handleOptionClick('/maintenance/articles')}>Articulos</li>
                 </ul>
                   </>
                 }
               
-            <li className="px-4 py-2 hover:bg-gray-200">
-              <a href="#">Opción 1</a>
-            </li>
+            <li className="px-4 py-2 hover:bg-gray-200"  onClick={()=>handleOptionClick('/table')} >Tabla Articulos</li>
             <li className="px-4 py-2 hover:bg-gray-200">
               <a href="#">Opción 2</a>
             </li>

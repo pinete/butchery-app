@@ -5,8 +5,13 @@ import GenericFormFormik from "./GenericFormFormik";
 
 type Props = {
   modal:boolean,
+  openForm:boolean,
+  setOpenForm:React.Dispatch<React.SetStateAction<boolean>>
+  withOpenBtn:boolean,
+  btnModalIcon:string,
   collect:string,
   row:{},
+  actionOnSubmit:(row: {}, clickedBtn?: 'Del' | 'Upd' | 'New') => void,
   textSubmitButton:string,
 }
 // Propiedades del boton submit
@@ -78,48 +83,32 @@ export const buttonClass =
     ${buttonProps?.adjunctClass}
   `
   
-const FormCollect = ({ modal, collect, row, textSubmitButton }:Props):JSX.Element => {
-  console.log('ha entrado en FormCollect' )
+const FormCollect = ({ modal, withOpenBtn, openForm, setOpenForm, btnModalIcon, collect, row, textSubmitButton, actionOnSubmit }:Props):JSX.Element => {
+  console.log('ha entrado en FormCollect con row = ', row )
+
   // Obtengo la estructura del formulario según la coleccion
   const fields:FieldForm[] = ObjFieldForm (collect)
 
   // Eliminamos la propiedad 'pos' que no existe en la DB
-  if ('pos' in row) delete row['pos'] 
+  // if ('pos' in row) delete row['pos'] 
 
-  // Asignamos row al estado de formItem
-  const[formItem, setFormItem] = useState<typeof row>(row)
-
-  // *************** POR SI SE NECESITA LA ID MAS ADELANTE ******************
-  // Capturamos el id del objeto
-  // const entries = Object.entries(row); 
-  // let id:string=''
-  // entries.forEach((item) => {
-  //   if (item.length > 1 && item[0] === 'id') {id = JSON.stringify(item[1])}
-  // })
-  // *************************************************************************
-
-  // Accion a realizar al guardar(onSubmit)
-  const updObj = (row:{}) => {
-    //alert ('Se ejecuta UpdObj en FormObj.tsx')
-    updateObject(row, collect)
-  }
-  
   return ( 
-
-      <GenericFormFormik 
-        collect = {collect}
+    <>
+      {row && <GenericFormFormik 
         modal = {modal}
+        openForm ={openForm}
+        setOpenForm={setOpenForm}
+        withOpenBtn = {withOpenBtn}
+        btnModalIcon = {btnModalIcon}
+        collect = {collect}
         title = {collect}
-        formItem = {formItem}
-        setFormItem = {setFormItem}
+        formItem = {row}
+        setFormItem = {()=>{}}
         fields = {fields}
-        //buttonClass = {buttonClass}
-        //inputClass = {inputClass}
-        //areaClass = {areaClass}
         textSubmitButton = {textSubmitButton}
-        onSubmit = {updObj}
-      />
-
+        onSubmit = {actionOnSubmit}
+      />}
+    </>
   )  
 }
 

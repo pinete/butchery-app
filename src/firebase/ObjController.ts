@@ -77,7 +77,8 @@ export const getSimplifiedObjects = async (collect: string): Promise<ObjectData[
   for (let i = 0; i < documentos.length; i++) {
     const doc = documentos[i];
     const propiedades = doc.data();
-    const objetoSimplificado: ObjectData = { pos: i + 1 };
+    //const objetoSimplificado: ObjectData = { pos: i + 1 };
+    const objetoSimplificado: ObjectData = {};
 
     for (const propiedad in propiedades) {
       if (propiedades.hasOwnProperty(propiedad) && typeof propiedades[propiedad] !== 'object') {

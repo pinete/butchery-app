@@ -16,7 +16,7 @@ const ObjState = (collect:string, id?:string) => {
     getSimplifiedObjects(collect)
       .then ((r) => { 
         setObj(r) 
-        console.log(r)
+        //console.log(r)
       }) 
       .catch((e) => console.error(e))
       .finally(() => setIsChanged(false))

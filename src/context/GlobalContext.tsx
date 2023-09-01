@@ -1,15 +1,21 @@
 import React, { createContext, useState } from 'react';
 
+export type GlobalContextType = {
+  globalObjState: object;
+  setGlobalObjState: (value: object) => void;
+  showSaveBtns: string[];
+  setShowSaveBtns: (value: string[]) => void;
+}
 // Crea el contexto global con el tipo object
-export const GlobalContext = createContext<object | undefined>(undefined);
+export const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 // Crea el proveedor del contexto global
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [globalObjState, setGlobalObjState] = useState<object>({});
+  const [showSaveBtns, setShowSaveBtns] = useState<string[]>([])
   // Cualquier otro estado global añadir aqui
-
   return (
-    <GlobalContext.Provider value={globalObjState}>
+    <GlobalContext.Provider value={{globalObjState, setGlobalObjState, showSaveBtns, setShowSaveBtns}}>
       {children}
     </GlobalContext.Provider>
   );

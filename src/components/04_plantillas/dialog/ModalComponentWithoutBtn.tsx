@@ -12,16 +12,12 @@ type BtnProps = {
   icon:string
 }
 type ModalProps = {
-  openForm:boolean,
-  setOpenForm:React.Dispatch<React.SetStateAction<boolean>>
   title: string;
-  withOpenBtn?: boolean;
   modalOpen?: boolean;
   buttonProps?: BtnProps;
   //unmountIfCancel?: boolean;
   children: React.ReactNode;
 };
-
 const btnProps:BtnProps = {
   textColorHover:'white',
   bg:'sky-400',
@@ -32,43 +28,35 @@ const btnProps:BtnProps = {
   icon:'Search' ,
 }
 
-const ModalComponent = 
+const ModalComponentWithoutBtn = 
   ({ 
-    openForm,
-    setOpenForm,
     title = 'Titulo',
-    withOpenBtn = true,
-    modalOpen = true, 
+    modalOpen = false, 
     buttonProps = btnProps,
     children
   }:ModalProps):JSX.Element => 
 {
-
   const [open, setOpen] = React.useState(modalOpen);
-  //
-  const handleOpen = () => {
-    setOpen((cur) => !cur);
-    setOpenForm(true)
-  }
+  const handleOpen = () => setOpen((cur) => !cur);
+
   
   return (
       <>
-        {withOpenBtn && <MotionButton  
-          textButton = {`Abrir`}
+        {/* <MotionButton  
           textColorHover={buttonProps.textColorHover}
           bg={buttonProps.bg}
           bgHover={buttonProps.bgHover}
           bgDark={buttonProps.bgDark}
           bgHoverDark={buttonProps.bgHoverDark}
           icon={buttonProps.icon} 
-          onclick={()=>handleOpen()} /> }
-        
-        {openForm && <Dialog
+          onclick={()=>handleOpen()} /> 
+        */}
+        <Dialog
           size="xs"
           open={open}
           handler={handleOpen}
           className="bg-transparent shadow-none"
-        >
+        > 
           <Card className="mx-auto w-full max-w-[24rem]">
             {title && <CardHeader
               variant="gradient"
@@ -88,9 +76,9 @@ const ModalComponent =
               </Button>
             </CardFooter>
           </Card>
-        </Dialog>}
+        </Dialog>
       </>
     
   )
 }
-export default ModalComponent
+export default ModalComponentWithoutBtn

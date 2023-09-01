@@ -1,9 +1,12 @@
 import React, {useState} from "react";
+import useSweetAlert from '../../../hooks/useSweetAlert'
 import {SiAddthis as AddIcon} from 'react-icons/si'
+import generateEmptyObject from "../../utils/generateEmptyObject";
 import ObjState from "../../../firebase/ObjState";
 import GenericTable from "../../03_organismos/GenericTable";
-import { deleteObject } from "../../../firebase/ObjController";
+import { deleteObject, updateObject, addObject } from "../../../firebase/ObjController";
 import FormCollect from "../forms/FormCollect";
+import MotionButton from "../../01_atomos/MotionButton";
 
 type TableCollectProps = {
   collect: string; 
@@ -20,85 +23,95 @@ type TableCollectProps = {
 const TableCollect = ({collect, fieldsToShow}: TableCollectProps):JSX.Element => {
 
   console.log('ha entrado en TableCollect')
+  const Alert = useSweetAlert()
   // Obtenemos el objeto de la coleccion
   const {obj} = ObjState(collect)
+
   // Obtenemos el tipo de los items del array obj
-  //setObj(generateObjectType(obj))
   type ItemType = typeof obj[0];
 
-  // Estado para controlar si se debe mostrar el formulario
-  const [showForm, setShowForm] = useState(false);
+  // Estado para controlar si se debe mostrar el formulario update
+  const [openUpdateForm, setOpenUpdateForm] = useState(false);
+  const [openDeleteForm, setOpenDeleteForm] = useState(false);
+  const [openNewForm, setOpenNewForm] = useState(false);
+
   // Estado para almacenar los datos del formulario
-  const [formRow, setFormRow] = useState({});
+  //const [formRow, setFormRow] = useState({});
 
   /*------------------------ ACCIONES EN BOTONES ------------------------- */
   const updAction = (row:ItemType) => {
-    setFormRow(row);
-    setShowForm(true);
+    updateObject(row,collect)
+    console.log('Has hecho onClick sobre el boton "Upd" de la linea con row = ', row)
   }
   const delAction = (row:ItemType) => {
-    setShowForm(false);
-    alert(`Has hecho onClick sobre el boton 'Del' de la linea ${Object.values(row)[0]}`)
-    deleteObject(row, collect)
+    Alert.onDelete(()=>deleteObject(row, collect), collect)
+    console.log(`Has hecho onClick sobre el boton 'Del' de la linea ${Object.values(row)[0]}`)
   }
-  const newAction = () => {
-    alert(`Has hecho onClick sobre el boton 'New'`)
-    setFormRow({})
-    setShowForm(true)
+  const newAction = (row:ItemType) => { 
+    addObject(row, collect)
+      .then((newId) => 
+        {
+          row = {...row, id:newId }
+          console.log('Ahora Row es: ', row)
+          updateObject(row, collect)
+        }
+      )
+      .catch((error) => 
+        console.log('Error: ', error)
+      )
+    console.log(`Has hecho onClick sobre el boton 'New' y row es ${JSON.stringify(row)}`)
   }
   
   // Escojemos la acción a realizar en función del botón activado
+  /*
   const btnAction = (row :ItemType, clickedBtn?: 'Del' | 'Upd' | 'New') => {
     let btnClick
     if(!clickedBtn) btnClick=''; else btnClick=clickedBtn
     switch (btnClick) {
       case 'Upd':
-        console.log(`Ha entrado en btnAction ${btnClick} de GenericTable`)
+        console.log(`Ha entrado en btnAction ${btnClick} de GenericTable con row = ${JSON.stringify(row)}`)
         updAction(row);
+        setOpenUpdateForm(false)
         break
       case 'Del':
-        console.log(`Ha entrado en btnAction ${btnClick} de GenericTable`)
+        console.log(`Ha entrado en btnAction ${btnClick} de GenericTable `)
         delAction(row);
+        setOpenDeleteForm(false)
         break
       case 'New':
-        console.log(`Ha entrado en btnAction ${btnClick} de GenericTable`)
-        newAction();
+        console.log(`Ha entrado en btnAction ${btnClick} de GenericTable con row = ${JSON.stringify(row)}`)
+        newAction(row);
+        setOpenNewForm(false)
         break
       default:  
-        alert(`Acción de boton no contemplada: Valor de btnClick=${btnClick}`)
+        console.log(`Acción de boton no contemplada: Valor de btnClick=${btnClick}`)
     } 
   }
+  */
+ 
   /*-------------------------- FIN ACCIONES EN BOTONES -------------------------- */
-
-  // Definimos el boton pulsado y enviamos a seleccionar la acción que realiza el boton Borrar
-  const handleButtonDeleteClick = (row:ItemType) => {
-    console.log('Ha entrado en handleButtonDeleteClick de TableCollect')
-    btnAction(row, 'Del')
-  };
-
-  // Definimos el boton pulsado y enviamos a seleccionar la acción que realiza el boton Actualizar
-  const handleButtonUpdateClick = (row:ItemType) => {
-    console.log('Ha entrado en handleButtonUpdateClick de TableCollect')
-    btnAction(row, 'Upd')
-  }
-
-  // Definimos el boton pulsado y enviamos a seleccionar la acción que realiza el boton Añadir
-  const handleButtonAddLineClick = () => {
-    console.log('Ha entrado en handleButtonAddLineClick de TableCollect')
-    btnAction(obj[0], 'New')
-  }
 
   // Definimos los botones de cabecera de la tabla
   const renderHeadButtons= ():JSX.Element | undefined => {
+    // Generamos row con la estructura pero con datos vacíos
+    const emptyRow:ItemType = generateEmptyObject(obj[0])
     return (  
       <div className="inline-flex">
-        <button 
-          title='Nueva linea'
-          className="bg-gray-300 hover:bg-sky-300 text-sky-800 font-bold py-1 px-4 rounded"
-          onClick={()=>handleButtonAddLineClick()}
-        >
-          <AddIcon/>
-        </button>
+        {/* Boton Add con formulario modal*/}
+        {(Object.keys(emptyRow).length > 0) && 
+          <FormCollect 
+            modal={true} 
+            withOpenBtn={true} 
+            openForm={openNewForm}
+            setOpenForm={setOpenNewForm}
+            btnModalIcon= 'Add' 
+            collect={collect} 
+            row={emptyRow} 
+            actionOnSubmit = {newAction} 
+            //actionOnSubmit = {()=>btnAction(emptyRow,'New')}
+            textSubmitButton = "Añadir"
+          /> 
+        }
       </div>
     )
   };
@@ -107,37 +120,44 @@ const TableCollect = ({collect, fieldsToShow}: TableCollectProps):JSX.Element =>
   const renderLineButtons = (row:ItemType) => {
     return (
     <div className="inline-flex">
-      <button 
-        title='Borrar linea'
-        className="bg-gray-300 hover:bg-red-400 text-red-800 font-bold py-2 px-4 rounded-l"
-        onClick={()=>handleButtonDeleteClick(row)}
-      > 
-        Del
-      </button>
-      <button
-        title='Actualizar linea'
-        className="bg-gray-300 hover:bg-sky-400 text-sky-800 font-bold py-2 px-4 rounded-r" 
-        onClick={()=>handleButtonUpdateClick(row)}
-      >
-        Upd
-      </button>
-      <FormCollect modal={true} collect={collect} row={row} textSubmitButton="Guardar"/> 
+      {/* Boton Delete */}
+      <MotionButton 
+        textButton="Eliminar" 
+        icon='Trash' 
+        bg="red-500" 
+        bgHover="red-800" 
+        //onclick={() => btnAction(row,'Del')}
+        onclick = {()=>delAction(row)}
+      />
+      {/* Boton Update con formulario modal*/}
+      {(Object.keys(row).length > 0) && 
+        <FormCollect 
+          modal={true} 
+          withOpenBtn={true} 
+          openForm={openUpdateForm}
+          setOpenForm={setOpenUpdateForm}
+          btnModalIcon= 'Pencil' 
+          collect={collect} 
+          row={row} 
+          actionOnSubmit = {updAction} 
+          //actionOnSubmit = {()=>btnAction(row,'Upd')}
+          textSubmitButton="Guardar cambios"
+        /> 
+      }  
     </div>
     )
   };
 
   return (
     <div className="mt-28 max-h-screen">
-      <GenericTable 
+      {obj.length > 0 && <GenericTable 
         data = {obj} 
-        btnAction = {btnAction}
+        //btnAction = {btnAction}
         fieldsToShow = {fieldsToShow} 
         renderHeadButtons = {renderHeadButtons}
         renderLineButtons = {renderLineButtons}
-      />
-      {showForm && (
-        <FormCollect modal={true} collect={collect} row={formRow} textSubmitButton="Guardar"/>
-      )}
+      />}
+      {obj.length <= 0 && <h2>Sin datos</h2>}
     </div>
   )
 }

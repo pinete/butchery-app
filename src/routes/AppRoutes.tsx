@@ -6,6 +6,7 @@ import NotFoundPage404 from '../components/05_vistas/NotFoundPage-404'
 import Header from '../components/03_organismos/Header';
 import Home from '../components/05_vistas/Home';
 import TableCollect from '../components/04_plantillas/tables/TableCollect';
+import GenericReactTable from '../components/04_plantillas/tables/GenericReactTable';
 import GlobalProvider from './../context/GlobalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import Settings from '../settings/Settings';
@@ -112,7 +113,7 @@ function AppRoutes() {
                 {/* Redirections to protect our routes */}
                 <Route path='/' element = {<Home />} />
  
-                 {/*Task Route */}
+                {/*Task Route */}
                 <Route path = '/task' element = {<TaskList showSettings={showSettings} setShowSettings={setShowSettings}/>}/>
 
                 {/* Families Route */}
@@ -120,7 +121,10 @@ function AppRoutes() {
 
                 {/* SubFamilies Route */}
                 <Route path = '/maintenance/subfamilies' element = {<TableCollect collect='subfamilies' fieldsToShow={['idFam','nombre']} />}/>
-                
+                {/* Articles Route */}
+                <Route path = '/maintenance/articles' element = {<TableCollect collect='articles' />}/>
+                {/* Table Route */}
+                <Route path = '/table' element = {<GenericReactTable collect='articles' pageCount={5}/>}/>
                 {/* NotFound Route */}          
                 <Route path = '*' element = {<NotFoundPage404/>}/>
             </Routes>

@@ -23,6 +23,7 @@ import {
  * @param bgHoverDark Color e intensidad de fondo si puntero sobre botón y modo oscuro. Por omisión 'sky-800'
  * @param adjunctClass Cualquier string a adjuntar a la clase (formato TailWind)
  * @param icon Icono. Admite: Trash, Pencil, UnlockFill, LockFill, Tools, Search, Add
+ * @param onclick Funcion ():JSX.Element | void => {}
  * @returns 
  */
 
@@ -36,8 +37,10 @@ const MotionButton = (
     bgHoverDark='sky-800',
     adjunctClass='',
     icon='',
+    //value?='',
     //onsubmit = (data:T)=>{},
-    onclick = ():JSX.Element | void  => {}
+    //(row: {}) => false | JSX.Element
+    onclick 
     //onclick = ():React.MouseEventHandler<HTMLButtonElement> | void => {}
   }:MotionButtonProps
 ) => {
@@ -72,7 +75,7 @@ const MotionButton = (
       whileHover={{ scale:1.1 }}
       whileTap={{ scale: 0.9 }} 
       className={`btnTailWind hover:text-${textColorHover} bg-${bg} hover:bg-${bgHover} dark:bg-${bgDark} dark:hover:bg-${bgHoverDark} ${adjunctClass}`}
-      onClick={ onclick }
+      onClick={ onclick } 
       // onSubmit={ onsubmit }
     > 
     <p className='flex items-center'>

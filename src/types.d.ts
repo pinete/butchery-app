@@ -20,6 +20,7 @@ interface MotionButtonProps {
   adjunctClass?: string | undefined;
   placeholder?:string,
   icon?:string;
+  value?:string | number | readonly string[] | undefined,
   // onsubmit?: (data:T)=>void
   onclick?:() => React.JSX.Element | void;
 }

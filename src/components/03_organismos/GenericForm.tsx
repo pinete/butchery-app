@@ -11,6 +11,8 @@ interface ObjectData {
 }
 
 type FormProps = {
+  openForm:boolean,
+  setOpenForm:React.Dispatch<React.SetStateAction<boolean>>
   formItem: ObjectData;
   setFormItem: React.Dispatch<React.SetStateAction<{}>>,
   collect: string;
@@ -36,6 +38,8 @@ function GenericForm (
   
   { formItem,
     setFormItem,
+    openForm,
+    setOpenForm,
     collect,
     modal,
     title = 'Titulo',
@@ -169,6 +173,8 @@ function GenericForm (
               />
             }
             {<ModalComponent
+              openForm = {openForm}
+              setOpenForm = {setOpenForm}
               title='Imagen'
               buttonProps={{
                 textColorHover: 'white',
@@ -231,6 +237,8 @@ function GenericForm (
     <>
     {modal ?  
       <ModalComponent 
+            openForm = {openForm}
+            setOpenForm = {setOpenForm}
             title={title} 
             buttonProps= {{
               textColorHover: 'white',
