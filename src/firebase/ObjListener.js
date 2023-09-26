@@ -34,10 +34,10 @@ export function ObjListener(collect) {
 */
 
   // Para comprobar si hay que volver a leer la DB por producirse un cambio
-  const [isChanged, setIsChanged] = useState(false)
+  const [isCollectChanged, setIsCollectChanged] = useState(false)
   useEffect(() => {
     const unlistening = onSnapshot(collection(db, collect), (snapshot) => {
-      snapshot.docChanges().forEach(() => setIsChanged(true));
+      snapshot.docChanges().forEach(() => setIsCollectChanged(true));
     });
 
     return () => {
@@ -47,5 +47,5 @@ export function ObjListener(collect) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return {isChanged, setIsChanged}
+  return {isCollectChanged, setIsCollectChanged}
 }

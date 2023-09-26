@@ -1,74 +1,40 @@
-import React from "react";
-import { Column, useTable, useGlobalFilter, useSortBy, usePagination, useFilters} from "react-table";
+import React, {Suspense, useState} from "react";
+import CaptureDataOptions from "./captureDataAndOptions";
+import { Column, useTable, useGlobalFilter, useSortBy, usePagination} from "react-table";
 import ObjState from "../../../firebase/ObjState";
 //import {GlobalContext} from '../../../context/GlobalContext';
 import ColumnsReactTable, { ColumnsType } from "./columnsReactTable";
 import MotionInput from "../../01_atomos/MotionInput";
 import {BiFirstPage, BiLastPage} from 'react-icons/bi'
 import {MdKeyboardArrowLeft, MdKeyboardArrowRight} from 'react-icons/md'
-import { getSimplifiedObjects } from "../../../firebase/ObjController";
+//import { getSimplifiedObjects, getSimplifiedObjectsOrderBy } from "../../../firebase/ObjController";
+//import { ObjListener } from "../../../firebase/ObjListener";
+
 
 type Props = { 
   collect: string 
-  pageCount: number};
+  pageCount: number
+  optionCollect:string[],
+};
 
-type ObjType = {
-  [key:string]:any
-}
+// type ObjType = {
+//   [key:string]:any
+// }
 
-export default function GenericReactTable({ collect, pageCount:controlledPageCount }: Props) {
+export default function GenericReactTable({ collect, pageCount:controlledPageCount, optionCollect }: Props) {
 
-  // Capturo los contextos globales necesarios
-  //const context = useContext(GlobalContext);
-  // if (!context) {
-  //   throw new Error('useContext was called outside of the GlobalContext provider.');
-  // }
+  const {data, optionRows, objLoaded, isCollectChanged, isOptionLoading} = CaptureDataOptions({collect, optionCollect})
 
-  
-  // *** Para el caso de los tipo Select, captamos las rows para las options de los Selects según optionCollect ***
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [optionRows, setOptionRows] = React.useState<Record<string, ObjType[]>> ()
-  const optionCollect = ['families', 'subfamilies'] //TODO: Traer este array como propiedad de GenericReactTable
+  const headColumns:ColumnsType = ColumnsReactTable({collect, isOptionLoading, optionRows, objLoaded});
 
-  // Creamos el objeto con las colecciones que se usarán como opciones de los Selects en esta tabla
-  React.useEffect(() => {
-    setIsLoading(true);
-    Promise.all(optionCollect.map(captureOptions))
-      .then((results: ObjType[][]) => {
-        const optionsObj: Record<string, ObjType[]> = {};
-        optionCollect.forEach((collect, index) => {
-          optionsObj[collect] = results[index];
-        });
-        setOptionRows(optionsObj);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error(error);
-      });
-  }, []);
-
-  const captureOptions = (collect: string): Promise<ObjType[]> => {
-    return getSimplifiedObjects(collect)
-      .catch((e) => {
-        console.error(e);
-        return []; 
-      });
-  }
-  // **************************************** Fin caso de los tipo Select ********************************************
-
-  const { obj } = ObjState(collect);
-
-  type ItemType = (typeof obj)[0];
-
-  const headColumns:ColumnsType = ColumnsReactTable({collect, isLoading, setIsLoading, optionRows, setOptionRows});
-  //const columns = React.useMemo<Column<ItemType>[]>(() => headColumns, []);
-  //actualizamos columns cuando cambian las dependencias y por tanto se rerenderiza (caso de las ids)
-  const columns = React.useMemo<Column<ItemType>[]>(() => headColumns, [isLoading, optionRows]); 
+  // actualizamos columns cuando cambian las dependencias y por tanto se rerenderiza.
+  //const columns = React.useMemo<Column<ItemType>[]>(() => headColumns, [collect, isOptionLoading, optionRows]);
+  // const columns = React.useMemo<ColumnsType>(() => headColumns, [isOptionLoading, objLoaded, optionRows, isCollectChanged]);
+  const columns = React.useMemo<ColumnsType>(() => headColumns, [objLoaded, optionRows]);
 
   const tableInstance = useTable(
     { columns, 
-      data: obj,
+      data: data,
       //defaultColumn: { Filter: DefaultFilterForColumn },
       //autoResetPage: false, 
       initialState: { pageIndex: 0, pageSize: controlledPageCount },
@@ -99,16 +65,17 @@ export default function GenericReactTable({ collect, pageCount:controlledPageCou
     preGlobalFilteredRows, // Array con las filas filtradas
     setGlobalFilter, // Actualiza valor del input para ir filtrando la tabla
     //state // Estado de la tabla en ese momento y página en la que estamos
-    state: { pageIndex, pageSize, globalFilter }
+    state: { pageIndex, pageSize, globalFilter },
+
   } = tableInstance;
 
   return (
-    <div className="mt-28 max-h-screen flex flex-col">
-      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <Suspense fallback={<div>Cargando...</div>}>
+    <div className="mt-28 max-h-screen">
+      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8 pl-4 pr-4">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-          <div className="overflow-x-auto ">
+          <div className="flex flex-col overflow-x-auto ">
             <table {...getTableProps()}>
-            {/* <table key={isLoading ? 'selectsLoading' : 'selectsLoaded'}{...getTableProps()}>Pretendo que re-renderice al cambiar isLoading */}
               <thead className="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900">
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
@@ -159,18 +126,19 @@ export default function GenericReactTable({ collect, pageCount:controlledPageCou
                   </tr>
                 ))}
               </tfoot>
-            </table>
-            <div className="flex justify-around">
+            </table>           
+            <div className="flex justify-between">
               <p>Total de registros: {preGlobalFilteredRows.length}</p>
               <MotionInput value={globalFilter} placeholder='Filtrar' onChange={(e) => setGlobalFilter(e.target.value)}/>
               <p>Registros filtrados: {rows.length}</p>
             </div>
-            <div className="pagination flex justify-around">
+            <div className="flex justify-between w-full">
               <span>
-                Página
-                <strong>
-                  {pageIndex + 1} de {pageOptions.length}
-                </strong>
+                <p>
+                  Página:
+                  <strong>{pageIndex + 1} de {pageOptions.length}</strong>
+                </p>
+                
               </span>
               <div className="controls">
                   <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
@@ -203,5 +171,6 @@ export default function GenericReactTable({ collect, pageCount:controlledPageCou
         </div>
       </div>
     </div>
+  </Suspense>
   );
 }

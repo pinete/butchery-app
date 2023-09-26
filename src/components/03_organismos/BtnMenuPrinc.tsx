@@ -85,7 +85,9 @@ const BtnMenuPrinc: React.FC  = ({ showSettings, setShowSettings }:any) => {
                   </>
                 }
               
-            <li className="px-4 py-2 hover:bg-gray-200"  onClick={()=>handleOptionClick('/table')} >Tabla Articulos</li>
+            <li className="px-4 py-2 hover:bg-gray-200"  onClick={()=>handleOptionClick('/tableArticles')} >Tabla Articulos</li>
+            <li className="px-4 py-2 hover:bg-gray-200"  onClick={()=>handleOptionClick('/tableFamilies')} >Tabla Familias</li>
+            <li className="px-4 py-2 hover:bg-gray-200"  onClick={()=>handleOptionClick('/tableSubfamilies')} >Tabla Subfamilias</li>
             <li className="px-4 py-2 hover:bg-gray-200">
               <a href="#">Opción 2</a>
             </li>

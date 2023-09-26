@@ -123,8 +123,12 @@ function AppRoutes() {
                 <Route path = '/maintenance/subfamilies' element = {<TableCollect collect='subfamilies' fieldsToShow={['idFam','nombre']} />}/>
                 {/* Articles Route */}
                 <Route path = '/maintenance/articles' element = {<TableCollect collect='articles' />}/>
-                {/* Table Route */}
-                <Route path = '/table' element = {<GenericReactTable collect='articles' pageCount={5}/>}/>
+                {/* Table Articles Route */}
+                <Route path = '/tableArticles' element = {<GenericReactTable collect='articles' pageCount={5} optionCollect={['families', 'subfamilies']}/>}/>
+                {/* Table Families Route */}
+                <Route path = '/tableFamilies' element = {<GenericReactTable collect='families' pageCount={5} optionCollect={[]}/>}/>
+                {/* Table Families Route */}
+                <Route path = '/tableSubfamilies' element = {<GenericReactTable collect='subfamilies' pageCount={5} optionCollect={['families']}/>}/>
                 {/* NotFound Route */}          
                 <Route path = '*' element = {<NotFoundPage404/>}/>
             </Routes>

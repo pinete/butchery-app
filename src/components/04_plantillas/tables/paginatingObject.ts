@@ -35,7 +35,7 @@ export default function PagedObj(obj:{}[], per_page:number) {
       }
       else {
         objToReturn.push(...[objBase])     
-        alert(`objToReturn en 2: ${JSON.stringify(objToReturn)}`)
+        //alert(`objToReturn en 2: ${JSON.stringify(objToReturn)}`)
         objBase.page = objBase.page + 1
         objBase.data.splice(0, per_page)
         objBase.data.push(obj[i]) 

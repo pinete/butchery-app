@@ -68,7 +68,34 @@ const useSwal = () => {
     swBaseOkCancel(obj, func)
   }
 
-  return { onDelete, onDeleteAll }
+  /**
+   * Muestra un mensaje modal de confirmacion
+   * @param {*} collect Nombre de la coleccion
+   * @param {*} process Procedimiento que se está realizando (ej. 'updating, 'filter', ...)
+   * @param {*} itemName Nombre del campo sobre el que se setá actuando. por defecto 'field'
+   */
+  const onConfirm = (collect, process, itemName) => {
+    if (!itemName) itemName='';
+    Swal.fire({
+      icon: 'success',
+      title: `${process} ${collect}`,
+      text: `The field ${itemName} has been updated!`,
+      timer: 3000,
+      //footer: '<a href="">Why do I have this issue?</a>'
+    })
+  }
+
+  const onError = () => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Something went wrong!',
+      timer: 3000,
+      //footer: '<a href="">Why do I have this issue?</a>'
+    })
+  }
+
+  return { onDelete, onDeleteAll, onConfirm, onError }
 }
 
 export default useSwal

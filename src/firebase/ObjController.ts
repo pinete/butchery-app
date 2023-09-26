@@ -10,7 +10,8 @@ import {
   QuerySnapshot, 
   query, 
   where,
-  Query
+  Query,
+  orderBy
 } from 'firebase/firestore';
 import { db } from './index';
 
@@ -89,6 +90,30 @@ export const getSimplifiedObjects = async (collect: string): Promise<ObjectData[
     arrayResultante.push(objetoSimplificado);
   }
   return arrayResultante;
+};
+/**
+ * Función para devolver querySnapshot como un array de objetos simplificado ordenado por la key guardada en field
+ * @param {string} collect Colección a leer
+ * @param {string} field Campo por el que ordenar
+ * @returns Object
+ */
+export const getSimplifiedObjectsOrderBy = async (collect: string, field:string): Promise<ObjectData[]> => {
+  const arrayResultante: ObjectData[] = [];
+
+  try {
+    const docRef = collection(db, collect);
+    const q = query(docRef, orderBy(field));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc: QueryDocumentSnapshot) => {
+      arrayResultante.push(doc.data());
+    });
+    return arrayResultante;
+
+  } catch (error) {
+    console.error('Error al obtener objetos ordenados:', error);
+    throw error;
+  }
 };
 
 /**
